@@ -1,0 +1,13 @@
+{
+  "desc": "仅开放客户端首页收录；涉及客户货物数据的页面一律不收录",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "pages/index/index"
+    },
+    {
+      "action": "disallow",
+      "page": "*"
+    }
+  ]
+}

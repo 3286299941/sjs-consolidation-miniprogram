@@ -1,0 +1,330 @@
+<view class="page">
+  <view wx:if="{{!bound}}" class="card">
+    <view class="title">绑定后查看本人货物</view>
+    <text class="subtitle">入库单数据属于客户隐私，需先完成绑定审核。</text>
+    <button class="btn-primary mt" bindtap="goBind">去绑定</button>
+  </view>
+
+  <block wx:else>
+    <!-- tab 切换：待发货 / 已打包 / 已发货 /（单独地址，仅 VIP 客户与管理员可见） -->
+    <view class="tabs">
+      <view
+        wx:for="{{tabs}}"
+        wx:key="key"
+        class="tab {{tab === item.key ? 'tab-on' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onTabTap"
+      >{{item.label}}</view>
+    </view>
+
+    <view class="search-row" wx:if="{{tab !== 'vip'}}">
+      <input
+        class="search-input"
+        value="{{keyword}}"
+        placeholder="{{placeholder}}"
+        confirm-type="search"
+        bindinput="onKeywordInput"
+        bindconfirm="onSearch"
+      />
+      <view class="search-btn" bindtap="onSearch">搜索</view>
+    </view>
+
+    <view wx:if="{{tab === 'vip' && adminAll}}" class="admin-banner">管理员预览：展示全部单独地址发货批次</view>
+
+    <view class="count-line">
+      {{tab === 'pending' ? '待发货' : (tab === 'packed' ? '已打包' : (tab === 'shipped' ? '已发货' : '单独地址'))}} ·
+      共 {{tab === 'shipped' ? groupCount + ' 批 · ' + total + ' 个包裹' : (total + (tab === 'pending' ? ' 件' : (tab === 'vip' ? ' 批' : ' 个包裹')))}}
+    </view>
+
+    <view wx:if="{{loading && list.length === 0}}">
+      <view wx:for="{{[1,2,3]}}" wx:key="*this" class="skeleton sk-card"></view>
+    </view>
+
+    <block wx:else>
+      <!-- VIP发货：批次维度，格式与管理端「VIP单独发货记录」一致 -->
+      <block wx:if="{{tab === 'vip'}}">
+        <view
+          wx:for="{{list}}"
+          wx:key="id"
+          class="vip-card"
+          data-id="{{item.id}}"
+          bindtap="goVipBill"
+        >
+          <view class="vip-head">
+            <view class="vip-title">{{item.title}}</view>
+            <view class="head-right">
+              <view class="tag {{item.is_locked ? 'tag-gray' : 'tag-green'}}">{{item.is_locked ? '已锁定' : '未锁定'}}</view>
+              <view class="mini-btn ghost" catchtap="goVipTracks" data-id="{{item.id}}">轨迹 ›</view>
+              <view class="mini-btn ghost" catchtap="goVipBill" data-id="{{item.id}}">账单 ›</view>
+            </view>
+          </view>
+          <text class="vip-sub">{{item.batch_no}}（{{item.customer_no || '—'}}）</text>
+
+          <view class="vip-stat">
+            <view class="stat-cell">
+              <text class="stat-num">{{item.package_total || 0}}</text>
+              <text class="stat-lab">箱数</text>
+            </view>
+            <view class="stat-cell">
+              <text class="stat-num">{{item.packed_packed || 0}}</text>
+              <text class="stat-lab">已打包</text>
+            </view>
+            <view class="stat-cell">
+              <text class="stat-num stat-blue">{{item.packed_shipped || 0}}</text>
+              <text class="stat-lab">已发货</text>
+            </view>
+          </view>
+
+          <view class="row-between vip-foot">
+            <text class="muted">状态：{{item.shipment_status || '待发货'}}</text>
+            <view class="mini-btn ghost" catchtap="goVipBill" data-id="{{item.id}}">账单明细 ›</view>
+          </view>
+        </view>
+      </block>
+
+      <!-- 待发货：只要单号 + 入库时间 -->
+      <block wx:elif="{{tab === 'pending'}}">
+        <view
+          wx:for="{{list}}"
+          wx:key="id"
+          class="pending-card"
+          data-id="{{item.id}}"
+          bindtap="onPendingTap"
+        >
+          <view class="row-between">
+            <text class="p-no">{{item.tracking_number}}</text>
+            <view wx:if="{{item.is_packing}}" class="tag tag-orange">打包中</view>
+          </view>
+          <text class="p-time">入库 {{item.entry_time_display}}</text>
+        </view>
+      </block>
+
+      <!-- 已打包：以包裹为单位 -->
+      <block wx:elif="{{tab === 'packed'}}">
+        <view
+          wx:for="{{list}}"
+          wx:key="id"
+          class="ship-card"
+          data-id="{{item.id}}"
+          bindtap="onToggleExpand"
+        >
+          <view class="row-between">
+            <text class="s-label">{{item.package_label}}</text>
+            <view wx:if="{{item.nature_display}}" class="tag {{item.nature_class}}">{{item.nature_display}}</view>
+          </view>
+
+          <view class="meta-row">
+            <text class="meta">件数 {{item.item_count_display}}</text>
+            <text class="meta">{{item.box_type}}</text>
+            <text class="meta">{{item.time_label}} {{item.time_display}}</text>
+            <text wx:if="{{item.package_note}}" class="meta">{{item.package_note}}</text>
+          </view>
+
+          <view class="dim-row">
+            <text class="dim-lab">尺寸</text>
+            <text wx:if="{{item.has_dimension}}" class="dim-val">{{item.dimension_display}}</text>
+            <text wx:else class="dim-empty">待仓库录入</text>
+          </view>
+
+          <view wx:if="{{tab === 'shipped' && item.freight_visible}}" class="fee-row">
+            <view class="fee-item">
+              <text class="fee-num">{{item.chargeable_display}}<text class="fee-unit"> kg</text></text>
+              <text class="fee-lab">计费重{{item.by_volume ? '（按体积重）' : ''}}</text>
+            </view>
+            <view class="fee-item">
+              <text class="fee-num fee-freight">{{currency}}{{item.freight_display}}</text>
+              <text class="fee-lab">运费</text>
+            </view>
+          </view>
+
+          <view wx:if="{{tab === 'shipped' && item.freight_paid}}" class="pay-row">
+            <text class="paid-badge">已付款</text>
+            <text class="paid-info">仓库标记{{item.freight_paid_at_short ? ' · ' + item.freight_paid_at_short : ''}}</text>
+          </view>
+
+          <view wx:if="{{tab === 'shipped'}}" class="w-row">
+            <text class="w-item">实重 {{item.actual_display}} kg</text>
+            <text class="w-item">体积重 {{item.volume_display}} kg</text>
+          </view>
+
+          <!-- 展开：包裹级品名 + 内含快递单号 -->
+          <view class="fold-row">
+            <text class="fold-text">{{item.fold_label}}</text>
+            <text class="fold-arrow">{{item.expanded ? '收起 ▲' : '展开 ▼'}}</text>
+          </view>
+
+          <view wx:if="{{item.expanded}}" class="fold-body">
+            <view class="goods-block">
+              <text class="goods-lab">品名</text>
+              <view wx:if="{{item.has_goods}}" class="goods-tags">
+                <text
+                  wx:for="{{item.goods_names}}"
+                  wx:for-item="g"
+                  wx:key="*this"
+                  class="goods-tag"
+                >{{g}}</text>
+              </view>
+              <text wx:else class="goods-empty">品名待仓库回填</text>
+            </view>
+
+            <view class="no-head">内含单号 {{item.items_count}} 个</view>
+            <block wx:if="{{item.items_count > 0}}">
+              <view wx:for="{{item.items}}" wx:for-item="sub" wx:key="id" class="item-row">
+                <text class="item-idx">{{index + 1}}</text>
+                <text class="item-no">{{sub.tracking_number}}</text>
+              </view>
+              <text wx:if="{{item.items_missing > 0}}" class="fold-hint">
+                另有 {{item.items_missing}} 个单号仓库尚未回写，补录后这里会显示
+              </text>
+            </block>
+            <text wx:elif="{{!item.items_available}}" class="fold-hint">
+              该包裹的内含单号仓库尚未回写，补录后这里会显示
+            </text>
+            <text wx:else class="fold-hint">暂无内含单号</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 已发货：批次维度卡片（批次号 + 发货时间 + 统计 + 轨迹/账单），可展开包裹明细 -->
+      <block wx:else>
+        <view
+          wx:for="{{list}}"
+          wx:for-item="g"
+          wx:for-index="gIndex"
+          wx:key="key"
+          class="vip-card"
+        >
+          <view class="vip-head">
+            <view class="vip-title">{{g.title}}</view>
+            <view class="head-right" wx:if="{{g.batch_id}}">
+              <view class="mini-btn ghost" catchtap="goBatchTracks" data-id="{{g.batch_id}}">轨迹 ›</view>
+              <view class="mini-btn ghost" catchtap="goBatchBill" data-id="{{g.batch_id}}">账单 ›</view>
+            </view>
+          </view>
+          <text class="vip-sub">最近发货 {{g.time_display}}</text>
+
+          <view class="vip-stat">
+            <view class="stat-cell">
+              <text class="stat-num">{{g.pkg_count}}</text>
+              <text class="stat-lab">包裹</text>
+            </view>
+            <view class="stat-cell">
+              <text class="stat-num stat-blue">{{g.cw_display}}<text wx:if="{{g.cw_display !== '—'}}" class="fee-unit"> kg</text></text>
+              <text class="stat-lab">计费重</text>
+            </view>
+            <view class="stat-cell">
+              <text class="stat-num {{g.freight_visible ? 'fee-freight' : 'fee-none'}}">{{g.freight_display}}</text>
+              <text class="stat-lab">运费合计{{g.freight_visible ? '' : '（未派发）'}}</text>
+            </view>
+          </view>
+
+          <view class="row-between vip-foot">
+            <text class="muted">{{g.paid_count > 0 ? '已付款 ' + g.paid_count + ' / ' + g.pkg_count + ' 个' : (g.freight_visible ? '运费待结算' : '账单待派发')}}</text>
+            <view class="mini-btn ghost" catchtap="onGroupToggle" data-gindex="{{gIndex}}">
+              {{g.expanded ? '收起明细 ▲' : '包裹明细 ▼'}}
+            </view>
+          </view>
+
+          <!-- 展开：该批次包裹明细（同已打包卡片） -->
+          <block wx:if="{{g.expanded}}">
+            <view
+              wx:for="{{g.items}}"
+              wx:for-item="pkg"
+              wx:for-index="pIndex"
+              wx:key="id"
+              class="ship-card ship-card-nested"
+              bindtap="onPkgToggle"
+              data-gindex="{{gIndex}}"
+              data-pindex="{{pIndex}}"
+            >
+              <view class="row-between">
+                <text class="s-label">{{pkg.package_label}}</text>
+                <view wx:if="{{pkg.nature_display}}" class="tag {{pkg.nature_class}}">{{pkg.nature_display}}</view>
+              </view>
+
+              <view class="meta-row">
+                <text class="meta">件数 {{pkg.item_count_display}}</text>
+                <text class="meta">{{pkg.box_type}}</text>
+                <text class="meta">发货于 {{pkg.time_display}}</text>
+              </view>
+
+              <view class="dim-row">
+                <text class="dim-lab">尺寸</text>
+                <text wx:if="{{pkg.has_dimension}}" class="dim-val">{{pkg.dimension_display}}</text>
+                <text wx:else class="dim-empty">待仓库录入</text>
+              </view>
+
+              <view wx:if="{{pkg.freight_visible}}" class="fee-row">
+                <view class="fee-item">
+                  <text class="fee-num">{{pkg.chargeable_display}}<text class="fee-unit"> kg</text></text>
+                  <text class="fee-lab">计费重{{pkg.by_volume ? '（按体积重）' : ''}}</text>
+                </view>
+                <view class="fee-item">
+                  <text class="fee-num fee-freight">{{currency}}{{pkg.freight_display}}</text>
+                  <text class="fee-lab">运费</text>
+                </view>
+              </view>
+
+              <view wx:if="{{pkg.freight_paid}}" class="pay-row">
+                <text class="paid-badge">已付款</text>
+                <text class="paid-info">仓库标记{{pkg.freight_paid_at_short ? ' · ' + pkg.freight_paid_at_short : ''}}</text>
+              </view>
+
+              <view class="w-row">
+                <text class="w-item">实重 {{pkg.actual_display}} kg</text>
+                <text class="w-item">体积重 {{pkg.volume_display}} kg</text>
+              </view>
+
+              <view class="fold-row">
+                <text class="fold-text">{{pkg.fold_label}}</text>
+                <text class="fold-arrow">{{pkg.expanded ? '收起 ▲' : '展开 ▼'}}</text>
+              </view>
+
+              <view wx:if="{{pkg.expanded}}" class="fold-body">
+                <view class="goods-block">
+                  <text class="goods-lab">品名</text>
+                  <view wx:if="{{pkg.has_goods}}" class="goods-tags">
+                    <text
+                      wx:for="{{pkg.goods_names}}"
+                      wx:for-item="gn"
+                      wx:key="*this"
+                      class="goods-tag"
+                    >{{gn}}</text>
+                  </view>
+                  <text wx:else class="goods-empty">品名待仓库回填</text>
+                </view>
+
+                <view class="no-head">内含单号 {{pkg.items_count}} 个</view>
+                <block wx:if="{{pkg.items_count > 0}}">
+                  <view wx:for="{{pkg.items}}" wx:for-item="sub" wx:key="id" class="item-row">
+                    <text class="item-idx">{{index + 1}}</text>
+                    <text class="item-no">{{sub.tracking_number}}</text>
+                  </view>
+                  <text wx:if="{{pkg.items_missing > 0}}" class="fold-hint">
+                    另有 {{pkg.items_missing}} 个单号仓库尚未回写，补录后这里会显示
+                  </text>
+                </block>
+                <text wx:elif="{{!pkg.items_available}}" class="fold-hint">
+                  该包裹的内含单号仓库尚未回写，补录后这里会显示
+                </text>
+                <text wx:else class="fold-hint">暂无内含单号</text>
+              </view>
+            </view>
+          </block>
+        </view>
+      </block>
+
+      <empty-state
+        wx:if="{{list.length === 0 && !loading}}"
+        text="{{tab === 'pending' ? '暂无待发货包裹' : (tab === 'packed' ? '暂无已打包包裹' : (tab === 'shipped' ? '暂无已发货包裹' : '暂无单独地址发货批次'))}}"
+        buttonText="{{keyword ? '清除搜索' : ''}}"
+        bind:action="onClearFilter"
+      />
+
+      <view wx:if="{{list.length > 0 && tab !== 'shipped' && tab !== 'vip'}}" class="load-more">
+        <text wx:if="{{loading}}">加载中...</text>
+        <text wx:elif="{{!hasMore}}">没有更多了</text>
+      </view>
+    </block>
+  </block>
+</view>

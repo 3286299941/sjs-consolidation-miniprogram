@@ -1,0 +1,49 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">无主件 · {{total}}</view>
+    <view class="hero-sub">系统口径：未归属客户且未退货的入库单号。可归户、退货或删除，操作实时同步系统。</view>
+  </view>
+
+  <view wx:if="{{loading && list.length === 0}}" class="skeleton sk-block"></view>
+
+  <block wx:else>
+    <view wx:for="{{list}}" wx:key="id" class="card orphan-card">
+      <view class="row-between">
+        <text class="p-no">{{item.tracking_number}}</text>
+        <view class="tag tag-orange">无主件</view>
+      </view>
+      <text class="muted">入库 {{item.entry_time_display}} · {{item.batch_no || '未指定批次'}}</text>
+      <text wx:if="{{item.abnormal_remark}}" class="muted">备注：{{item.abnormal_remark}}</text>
+      <text wx:elif="{{item.customer_remark}}" class="muted">备注：{{item.customer_remark}}</text>
+      <view class="act-row">
+        <view class="act-btn primary" data-id="{{item.id}}" data-no="{{item.tracking_number}}" bindtap="onAssignOpen">归户</view>
+        <view class="act-btn" data-id="{{item.id}}" data-no="{{item.tracking_number}}" bindtap="onReturn">退货</view>
+        <view class="act-btn danger" data-id="{{item.id}}" data-no="{{item.tracking_number}}" bindtap="onDelete">删除</view>
+      </view>
+    </view>
+    <empty-state wx:if="{{list.length === 0}}" text="暂无无主件" mark="✓" />
+  </block>
+
+  <view class="card notice">
+    归户会按系统规则重排该客户的入库序号并回填收货地址；删除为物理删除，请在确认单号无误后操作。
+  </view>
+
+  <!-- 归户弹层 -->
+  <view wx:if="{{assignOpen}}" class="mask" bindtap="onAssignClose">
+    <view class="panel" catchtap="noop">
+      <view class="panel-title">归户：{{activeNo}}</view>
+      <text class="panel-sub">搜索客户名 / 客户编号 / 邮编 / 条码，选择后确认归户。</text>
+      <view class="search-row">
+        <input class="search-input" value="{{keyword}}" placeholder="输入客户名或编号" bindinput="onKeywordInput" bindconfirm="onSearch" />
+        <view class="search-btn" bindtap="onSearch">搜索</view>
+      </view>
+      <scroll-view scroll-y class="cand-list">
+        <view wx:for="{{candidates}}" wx:key="id" class="cand" data-id="{{item.id}}" data-name="{{item.name}}" bindtap="onPickCustomer">
+          <text class="cand-name">{{item.name}}</text>
+          <text class="muted">{{item.customer_no}} · 邮编 {{item.zip_code || '—'}}</text>
+        </view>
+        <text wx:if="{{candidates.length === 0}}" class="fold-hint">输入关键词后点搜索</text>
+      </scroll-view>
+    </view>
+  </view>
+</view>

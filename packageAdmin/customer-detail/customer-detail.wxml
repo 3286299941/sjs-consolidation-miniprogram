@@ -1,0 +1,269 @@
+<view class="page">
+  <!-- 客户信息头 -->
+  <view wx:if="{{customer}}" class="card head-card">
+    <view class="row-between">
+      <view class="col">
+        <text class="title">{{customer.name}}</text>
+        <text class="muted">{{customer.customer_no}} · 邮编 {{customer.zip_code || '—'}}</text>
+      </view>
+      <text class="freight-num">{{currency}}{{pendingFreight}}</text>
+    </view>
+    <view class="row-between foot">
+      <text class="muted">待付运费（按包裹实时核算）</text>
+      <view class="foot-actions wrap">
+        <view class="mini-btn mini-ghost" bindtap="onShowFreight">运费明细</view>
+        <view class="mini-btn mini-ghost" bindtap="onSettleFreight">一键全部已付款</view>
+        <view class="mini-btn mini-ghost" bindtap="onShowCouponForm">发优惠券</view>
+        <view class="mini-btn mini-ghost" bindtap="onCancelConfirm">取消本周确认</view>
+        <view class="mini-btn" bindtap="openPanel">代客户确认发货 ›</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 优惠券 -->
+  <view class="card coupon-card">
+    <view class="row-between">
+      <text class="sec-title">优惠券（{{coupons.length}}）</text>
+      <view class="mini-btn mini-ghost" bindtap="onShowCouponForm">{{couponFormOpen ? '收起' : '发优惠券'}}</view>
+    </view>
+    <view wx:if="{{coupons.length > 0}}" class="coupon-list">
+      <view wx:for="{{coupons}}" wx:key="id" class="coupon-row">
+        <view class="coupon-info">
+          <text class="coupon-code">{{item.code}}</text>
+          <text class="muted">{{item.ctype === 'amount' ? '¥' : ''}}{{item.value}}{{item.ctype === 'percent' ? '%' : ''}} · 有效期至 {{item.expires_at}}</text>
+        </view>
+        <view class="tag {{item.status === 'unused' ? 'tag-green' : 'tag-gray'}}">{{item.status === 'unused' ? '未使用' : '已使用'}}</view>
+        <view wx:if="{{item.status === 'unused'}}" class="mini-btn tiny" data-code="{{item.code}}" bindtap="onRedeemCoupon">抵扣</view>
+      </view>
+    </view>
+    <text wx:else class="fold-hint">暂无优惠券，点「发优惠券」给该客户发放</text>
+  </view>
+
+  <!-- 三态 tab -->
+  <view class="tabs">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="tab {{tab === item.key ? 'tab-on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onTabTap"
+    >{{item.label}}</view>
+  </view>
+
+  <view class="search-row">
+    <input
+      class="search-input"
+      value="{{keyword}}"
+      placeholder="单号 / 批次号"
+      confirm-type="search"
+      bindinput="onKeywordInput"
+      bindconfirm="onSearch"
+    />
+    <view class="search-btn" bindtap="onSearch">搜索</view>
+  </view>
+
+  <view class="count-line">
+    {{tab === 'pending' ? '待发货' : (tab === 'packed' ? '已打包' : '已发货')}} ·
+    共 {{total}}{{tab === 'pending' ? ' 件' : ' 个包裹'}}
+  </view>
+
+  <view wx:if="{{loading && list.length === 0}}">
+    <view wx:for="{{[1,2,3]}}" wx:key="*this" class="skeleton sk-card"></view>
+  </view>
+
+  <block wx:else>
+    <!-- 待发货 -->
+    <block wx:if="{{tab === 'pending'}}">
+      <view wx:for="{{list}}" wx:key="id" class="card p-card">
+        <view class="row-between">
+          <text class="p-no">{{item.tracking_number}}</text>
+          <text class="muted">{{item.status || '待发货'}}</text>
+        </view>
+        <text class="muted">入库 {{item.entry_time_display}}</text>
+        <view class="pkg-actions">
+          <view class="mini-btn tiny" data-id="{{item.id}}" data-no="{{item.tracking_number}}" data-action="return" catchtap="onInboundAction">退货</view>
+          <view class="mini-btn tiny" data-id="{{item.id}}" data-no="{{item.tracking_number}}" data-action="mark-orphan" catchtap="onInboundAction">转无主件</view>
+          <view class="mini-btn tiny danger" data-id="{{item.id}}" data-no="{{item.tracking_number}}" data-action="delete" catchtap="onInboundAction">删除</view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 已打包 / 已发货：与客户端同款卡片 -->
+    <block wx:else>
+      <view wx:for="{{list}}" wx:key="id" class="card ship-card" data-id="{{item.id}}" bindtap="onToggleExpand">
+        <view class="row-between">
+          <text class="s-label">{{item.package_label}}</text>
+          <view class="right-tools">
+            <view wx:if="{{item.nature_display}}" class="tag {{item.nature_class}}">{{item.nature_display}}</view>
+          </view>
+        </view>
+
+        <view class="meta-row">
+          <text class="meta">件数 {{item.item_count_display}}</text>
+          <text class="meta">{{item.box_type}}</text>
+          <text class="meta">{{item.time_label}} {{item.time_display}}</text>
+        </view>
+
+        <view wx:if="{{tab === 'shipped'}}" class="fee-row">
+          <view class="fee-item">
+            <text class="fee-num">{{item.chargeable_display}}<text class="fee-unit"> kg</text></text>
+            <text class="fee-lab">计费重{{item.by_volume ? '（按体积重）' : ''}}</text>
+          </view>
+          <view class="fee-item">
+            <text class="fee-num fee-freight">{{currency}}{{item.freight_display}}</text>
+            <text class="fee-lab">运费</text>
+          </view>
+        </view>
+
+        <view wx:if="{{tab === 'shipped'}}" class="pay-row">
+          <block wx:if="{{item.freight_paid}}">
+            <text class="paid-badge">已付款</text>
+            <text class="paid-info">{{item.freight_paid_by === 'admin' ? '仓库标记' : (item.freight_paid_by === 'client' ? '客户标记' : '')}}{{item.freight_paid_at_short ? ' · ' + item.freight_paid_at_short : ''}}</text>
+            <view class="paid-unmark" data-id="{{item.id}}" catchtap="onMarkPaid">取消</view>
+          </block>
+          <view wx:else class="mark-paid-btn" data-id="{{item.id}}" catchtap="onMarkPaid">标记已付款</view>
+        </view>
+
+        <view wx:if="{{tab === 'shipped'}}" class="w-row">
+          <text class="w-item">实重 {{item.actual_display}} kg</text>
+          <text class="w-item">体积重 {{item.volume_display}} kg</text>
+        </view>
+
+        <view class="fold-row">
+          <text class="fold-text">{{item.fold_label}}</text>
+          <text class="fold-arrow">{{item.expanded ? '收起 ▲' : '展开 ▼'}}</text>
+        </view>
+
+        <view wx:if="{{item.expanded}}" class="fold-body">
+          <view wx:for="{{item.items}}" wx:for-item="sub" wx:key="id" class="item-row">
+            <text class="item-no">{{sub.tracking_number}}</text>
+          </view>
+          <text wx:if="{{item.items_count === 0}}" class="fold-hint">暂无内含单号</text>
+        </view>
+      </view>
+    </block>
+
+    <empty-state
+      wx:if="{{list.length === 0 && !loading}}"
+      text="{{tab === 'pending' ? '暂无待发货包裹' : (tab === 'packed' ? '暂无已打包包裹' : '暂无已发货包裹')}}"
+    />
+
+    <view wx:if="{{list.length > 0}}" class="load-more">
+      <text wx:if="{{loading}}">加载中...</text>
+      <text wx:elif="{{!hasMore}}">没有更多了</text>
+    </view>
+  </block>
+
+  <!-- 代客确认发货面板 -->
+  <view wx:if="{{panelOpen}}" class="mask" bindtap="closePanel">
+    <view class="panel" catchtap="noop">
+      <view class="panel-title">代客户确认发货</view>
+      <text class="panel-sub">与客户本人操作同一套校验；提交后立即同步仓库。</text>
+
+      <text class="sec-label">发货方式</text>
+      <view class="opt-row">
+        <view
+          wx:for="{{deliveryOptions}}"
+          wx:key="key"
+          class="opt {{deliveryType === item.key ? 'opt-on' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="onDeliveryTap"
+        >{{item.label}}</view>
+      </view>
+
+      <block wx:if="{{deliveryType !== 'none'}}">
+        <text class="sec-label">货物范围</text>
+        <view class="opt-row">
+          <view
+            wx:for="{{scopeOptions}}"
+            wx:key="key"
+            class="opt {{cargoScope === item.key ? 'opt-on' : ''}}"
+            data-key="{{item.key}}"
+            bindtap="onScopeTap"
+          >{{item.label}}</view>
+        </view>
+      </block>
+
+      <block wx:if="{{deliveryType === 'direct'}}">
+        <text class="sec-label">收货地址</text>
+        <view class="addr-grid">
+          <input class="addr-input" placeholder="收件人" value="{{address.name}}" data-field="name" bindinput="onAddrInput" />
+          <input class="addr-input" placeholder="电话" type="number" value="{{address.phone}}" data-field="phone" bindinput="onAddrInput" />
+          <input class="addr-input addr-line" placeholder="详细地址" value="{{address.line}}" data-field="line" bindinput="onAddrInput" />
+          <input class="addr-input" placeholder="邮编" type="number" value="{{address.zip}}" data-field="zip" bindinput="onAddrInput" />
+        </view>
+      </block>
+
+      <block wx:if="{{deliveryType !== 'none'}}">
+        <text class="sec-label">勾选本周要发的件（{{selectedCount}}/{{candidates.length}}）</text>
+        <scroll-view scroll-y class="cand-list">
+          <view
+            wx:for="{{candidates}}"
+            wx:key="id"
+            class="cand {{selectedIds[item.id] ? 'cand-on' : ''}}"
+            data-id="{{item.id}}"
+            bindtap="onCandidateTap"
+          >
+            <text class="cand-check">{{selectedIds[item.id] ? '☑' : '☐'}}</text>
+            <text class="cand-no">{{item.tracking_number}}</text>
+            <text wx:if="{{item.is_packing}}" class="tag tag-orange">打包中</text>
+          </view>
+          <text wx:if="{{candidates.length === 0}}" class="fold-hint">该客户暂无待发货包裹</text>
+        </scroll-view>
+      </block>
+
+      <text class="sec-label">备注（同步到系统客户备注，打包页可见）</text>
+      <input class="remark-input" value="{{remark}}" placeholder="选填" bindinput="onRemarkInput" />
+
+      <button class="btn-primary mt" disabled="{{submitting}}" bindtap="submitPanel">
+        {{submitting ? '提交中...' : (deliveryType === 'none' ? '确认全部留仓' : '确认并同步仓库')}}
+      </button>
+    </view>
+  </view>
+
+  <!-- 运费明细弹层 -->
+  <view wx:if="{{freightDetailOpen}}" class="mask" bindtap="onCloseFreight">
+    <view class="panel" catchtap="noop">
+      <view class="panel-title">运费明细</view>
+      <view class="fee-list">
+        <view wx:for="{{freightItems}}" wx:key="id" class="fee-line">
+          <view class="col">
+            <text class="fee-label">{{item.label}}</text>
+            <text class="muted">{{item.nature}} · 计费重 {{item.chargeable}}kg · {{item.rate}}/kg</text>
+          </view>
+          <text class="fee-amt">{{currency}}{{item.freight}}</text>
+          <view wx:if="{{item.paid}}" class="paid-badge">已付款</view>
+          <view wx:else class="paid-unmark sm" data-id="{{item.id}}" catchtap="onFreightTogglePaid">标记已付款</view>
+        </view>
+        <text wx:if="{{freightItems.length === 0}}" class="fold-hint">无待付运费</text>
+      </view>
+      <view class="fee-total">
+        <text>合计（未付款部分）</text>
+        <text class="fee-amt">{{currency}}{{freightTotal}}</text>
+      </view>
+      <view class="modal-btn-row">
+        <button class="btn-primary" bindtap="onSettleFreight">一键全部已付款</button>
+        <button class="btn-plain" bindtap="onCloseFreight">关闭</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 发优惠券弹层 -->
+  <view wx:if="{{couponFormOpen}}" class="mask" bindtap="onShowCouponForm">
+    <view class="panel" catchtap="noop">
+      <view class="panel-title">发放优惠券</view>
+      <text class="sec-label">类型</text>
+      <view class="opt-row">
+        <view class="opt {{couponForm.ctype === 'amount' ? 'opt-on' : ''}}" data-key="amount" bindtap="onCouponTypeTap">满减（¥）</view>
+        <view class="opt {{couponForm.ctype === 'percent' ? 'opt-on' : ''}}" data-key="percent" bindtap="onCouponTypeTap">折扣（%）</view>
+      </view>
+      <text class="sec-label">面额</text>
+      <input class="remark-input" value="{{couponForm.value}}" placeholder="如 50 或 10" data-field="value" bindinput="onCouponInput" />
+      <text class="sec-label">备注</text>
+      <input class="remark-input" value="{{couponForm.note}}" placeholder="选填" data-field="note" bindinput="onCouponInput" />
+      <text class="sec-label">有效期（天）</text>
+      <input class="remark-input" value="{{couponForm.expire_days}}" type="number" data-field="expire_days" bindinput="onCouponInput" />
+      <button class="btn-primary mt" disabled="{{couponBusy}}" bindtap="onIssueCoupon">{{couponBusy ? '发放中...' : '确认发放'}}</button>
+    </view>
+  </view>
+</view>

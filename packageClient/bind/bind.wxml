@@ -1,0 +1,157 @@
+<view class="page">
+  <view wx:if="{{result}}" class="card result-card">
+    <view class="result-mark">✓</view>
+    <text class="title">申请已提交</text>
+    <text class="subtitle">仓库会在管理端核对收货名、地址与邮编，审核通过后即可查看本人货物、提交发货意向。</text>
+
+    <view wx:if="{{mode === 'new'}}" class="tpl-card">
+      <text class="tpl-title">电商平台收货地址模板（下单时粘贴到收货地址）</text>
+      <view class="tpl-line">{{tplLine1}}</view>
+      <view class="tpl-line">{{tplLine2}}</view>
+      <button class="copy-btn" bindtap="onCopyTemplate">复制地址模板</button>
+    </view>
+
+    <button class="btn-primary mt" bindtap="goBack">返回</button>
+  </view>
+
+  <block wx:else>
+    <view class="card">
+      <text class="title">绑定仓库客户身份</text>
+      <text class="subtitle intro">新客户请选「新客户建档」自助建档；已在仓库登过记的客户，用「已有客户」搜索绑定。</text>
+
+      <view wx:if="{{bound}}" class="warn-line">
+        当前已绑定 {{profile.customer.name}}（{{profile.customer.customer_no}}）。重复提交将生成一条新的换绑申请，需管理端审核。
+      </view>
+
+      <!-- 模式切换 -->
+      <view class="type-row">
+        <view class="type-btn {{mode === 'existing' ? 'type-on' : ''}}" data-mode="existing" bindtap="onModeChange">已有客户</view>
+        <view class="type-btn {{mode === 'new' ? 'type-on' : ''}}" data-mode="new" bindtap="onModeChange">新客户建档</view>
+      </view>
+
+      <!-- ===== 已有客户：搜索 + 下拉 ===== -->
+      <block wx:if="{{mode === 'existing'}}">
+        <view class="form-item search-wrap">
+          <text class="form-label">收货名（客户名）</text>
+          <input
+            class="form-input"
+            value="{{keyword}}"
+            placeholder="输入客户名/客户号/邮编，如：张女（单字亦可）"
+            bindinput="onKeywordInput"
+          />
+
+          <view wx:if="{{selected}}" class="selected-box">
+            <view class="row-between">
+              <text class="strong">已选择：{{selected.name}}</text>
+              <text class="link-btn" bindtap="onClearSelection">重新选择</text>
+            </view>
+            <text class="sel-line">区域 {{selected.area || '待仓库补充'}} ｜ 邮编 {{selected.zip_code || '—'}}</text>
+            <text class="no-line">{{selected.customer_no}}</text>
+          </view>
+
+          <scroll-view wx:if="{{showResults && !selected}}" scroll-y class="dropdown">
+            <view wx:if="{{searching}}" class="dropdown-hint">搜索中...</view>
+            <block wx:elif="{{results.length > 0}}">
+              <view
+                wx:for="{{results}}"
+                wx:key="id"
+                class="dropdown-item"
+                data-id="{{item.id}}"
+                bindtap="onPickCustomer"
+              >
+                <view class="row-between">
+                  <text class="strong">{{item.name}}</text>
+                  <text class="zip">{{item.zip_code || '无邮编'}}</text>
+                </view>
+                <view class="area-row">
+                  <text class="area-tag">{{item.area || '区域待补充'}}</text>
+                  <text class="no-line">{{item.customer_no}}</text>
+                </view>
+              </view>
+            </block>
+            <view wx:else class="dropdown-hint">没有找到该收货名，请核对写法或联系仓库</view>
+          </scroll-view>
+
+          <view wx:if="{{keyword.length === 0}}" class="field-hint">输入客户名、客户号或邮编即可搜索（支持单字，如「王」）</view>
+        </view>
+      </block>
+
+      <!-- ===== 新客户建档 ===== -->
+      <block wx:elif="{{mode === 'new'}}">
+        <view class="form-item">
+          <text class="form-label">客户名</text>
+          <input class="form-input" value="{{nc.name}}" data-field="name" placeholder="如：花儿的幸福" bindinput="onNewInput" />
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">收货邮编</text>
+          <input class="form-input" value="{{nc.zip_code}}" data-field="zip_code" placeholder="如：91755" bindinput="onNewInput" />
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">收货地址</text>
+          <textarea class="form-textarea" value="{{nc.address}}" data-field="address" placeholder="美国收货地址（州/市/街道）" bindinput="onNewInput" />
+        </view>
+
+        <view class="form-item">
+          <text class="form-label">联系电话（选填）</text>
+          <input class="form-input" value="{{nc.phone}}" data-field="phone" placeholder="选填" bindinput="onNewInput" />
+        </view>
+
+        <!-- 单独发货开关 -->
+        <view class="solo-row" bindtap="onToggleSolo">
+          <view class="solo-text">
+            <text class="solo-title">单独发货（VIP 单独地址）</text>
+            <text class="solo-sub">勾选后需填写更详细的收货信息，单独地址发货需 ≥ {{directMinKg}}kg</text>
+          </view>
+          <switch checked="{{nc.is_vip}}" color="#1f6feb" bindchange="onToggleSolo" catchtap="noop" />
+        </view>
+
+        <block wx:if="{{nc.is_vip}}">
+          <view class="form-item">
+            <text class="form-label">收货人姓名</text>
+            <input class="form-input" value="{{nc.invoice_contact}}" data-field="invoice_contact" placeholder="如：Zhang San" bindinput="onNewInput" />
+          </view>
+          <view class="form-item">
+            <text class="form-label">收货人电话</text>
+            <input class="form-input" value="{{nc.invoice_phone}}" data-field="invoice_phone" placeholder="选填" bindinput="onNewInput" />
+          </view>
+          <view class="form-item">
+            <text class="form-label">单独发货详细地址</text>
+            <textarea class="form-textarea" value="{{nc.invoice_address}}" data-field="invoice_address" placeholder="完整美国门牌地址（同系统 VIP 发票地址）" bindinput="onNewInput" />
+          </view>
+          <view class="form-item">
+            <text class="form-label">单独发货邮编</text>
+            <input class="form-input" value="{{nc.invoice_zip}}" data-field="invoice_zip" placeholder="如：91755" bindinput="onNewInput" />
+          </view>
+        </block>
+
+        <!-- 电商平台地址模板 -->
+        <view class="tpl-card">
+          <text class="tpl-title">电商平台收货地址模板（下单时粘贴到收货地址，可一键复制）</text>
+          <view class="tpl-line">{{tplLine1}}</view>
+          <view class="tpl-line">{{tplLine2}}</view>
+          <button class="copy-btn" bindtap="onCopyTemplate">复制地址模板</button>
+        </view>
+      </block>
+
+      <view class="agree-row" bindtap="onToggleAgree">
+        <view class="checkbox {{agreed ? 'checkbox-on' : ''}}">{{agreed ? '✓' : ''}}</view>
+        <text class="agree-text">我已阅读并同意：所选信息仅用于核对客户身份与展示本人货物数据，最终以仓库审核结果为准</text>
+      </view>
+
+      <button
+        class="btn-primary mt"
+        disabled="{{submitting || !agreed || !canSubmit}}"
+        bindtap="onSubmit"
+      >{{submitting ? '提交中...' : submitText}}</button>
+    </view>
+
+    <view class="card notice-card">
+      <text class="strong">怎么确认是自己的档案？</text>
+      <view class="notice-line">· 下拉只显示「区域 + 邮编」（如 工业市 91745），与仓库登记的收货区域一致。</view>
+      <view class="notice-line">· 同名客户较多时，请按区域和邮编确认哪一条是您本人，不要选错。</view>
+      <view class="notice-line">· 新客户建档后由仓库在管理端核对完整地址并审核，通过后一个微信号对应一个客户档案。</view>
+    </view>
+  </block>
+</view>

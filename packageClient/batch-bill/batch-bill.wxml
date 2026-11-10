@@ -1,0 +1,39 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">我的账单</view>
+    <view class="hero-sub">{{batchNo}} · 派发时间 {{dispatched_at}}</view>
+  </view>
+
+  <view wx:if="{{!dispatched}}" class="empty-hint">本批次账单尚未派发，暂时无法查看</view>
+
+  <block wx:elif="{{loading}}">
+    <view class="sk-block"></view>
+  </block>
+
+  <block wx:else>
+    <view wx:if="{{items.length === 0}}" class="empty-hint">本批次没有您的包裹</view>
+
+    <view wx:for="{{items}}" wx:key="nature" class="grp-card">
+      <view class="grp-head {{item.nature === 'sensitive' ? 'sensitive' : 'normal'}}">
+        <text class="grp-tag">{{item.nature === 'sensitive' ? '敏货' : '普货'}}</text>
+        <text class="grp-rate">¥{{item.rate}}/kg</text>
+      </view>
+      <view class="grp-body">
+        <view class="grp-row"><text>件数</text><text>{{item.count}} 件</text></view>
+        <view class="grp-row"><text>实重</text><text>{{item.weight}} kg</text></view>
+        <view class="grp-row"><text>体积重</text><text>{{item.volume_weight}} kg</text></view>
+        <view class="grp-row"><text>计费重</text><text>{{item.chargeable}} kg</text></view>
+        <view class="grp-row strong"><text>运费</text><text class="amt">{{currency}}{{item.freight}}</text></view>
+        <view class="grp-row"><text>已付</text><text>{{currency}}{{item.paid_freight}}</text></view>
+        <view class="grp-row"><text>待付</text><text class="pending">{{currency}}{{item.pending_freight}}</text></view>
+        <view class="grp-state {{item.settled ? 'paid' : 'unpaid'}}">{{item.settled ? '已全部付清' : '待付款'}}</view>
+      </view>
+    </view>
+
+    <view class="total-card">
+      <view class="total-row"><text>运费合计</text><text class="total-amt">{{currency}}{{total_freight}}</text></view>
+      <view class="total-row"><text>已付合计</text><text>{{currency}}{{paid_total}}</text></view>
+      <view class="total-row"><text>待付合计</text><text class="pending">{{currency}}{{total_pending}}</text></view>
+    </view>
+  </block>
+</view>

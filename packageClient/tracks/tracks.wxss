@@ -1,0 +1,64 @@
+.page { padding: 24rpx 24rpx 48rpx; background: #f4f6fb; min-height: 100vh; }
+.hero { background: linear-gradient(135deg, #1f6feb, #4b91ff); border-radius: 20rpx; padding: 34rpx 30rpx; margin-bottom: 24rpx; color: #fff; }
+.hero-title { font-size: 38rpx; font-weight: 700; }
+.hero-sub { font-size: 23rpx; opacity: 0.88; margin-top: 10rpx; }
+.card { background: #fff; border-radius: 18rpx; padding: 26rpx 22rpx; margin-bottom: 18rpx; box-shadow: 0 4rpx 16rpx rgba(31,42,60,0.05); }
+.row-between { display: flex; align-items: center; justify-content: space-between; }
+.batch-head { padding-bottom: 18rpx; border-bottom: 2rpx solid #f0f2f5; }
+.batch-no { font-size: 30rpx; font-weight: 700; color: #1f2733; }
+.muted { font-size: 23rpx; color: #8a93a3; }
+
+.track-group { padding: 26rpx 0 8rpx; border-bottom: 2rpx solid #f4f6f9; }
+.track-group:last-child { border-bottom: none; }
+.group-head { display: flex; align-items: center; }
+.badge { font-size: 24rpx; font-weight: 600; padding: 6rpx 20rpx; border-radius: 999rpx; }
+.badge-green { background: #e8f7ef; color: #16a34a; }
+.badge-red { background: #fdeaea; color: #e23c3c; }
+
+/* 顶部进度条：宽度随当前节点变化，不做动画、不显示百分比 */
+.bar { height: 10rpx; background: #eef1f6; border-radius: 999rpx; overflow: hidden; margin-top: 26rpx; }
+.bar-fill { height: 100%; background: #1f6feb; border-radius: 999rpx; }
+.bar-caption { font-size: 23rpx; color: #1f6feb; margin-top: 12rpx; font-weight: 600; }
+.bar-caption.caption-issue { color: #e8862b; }
+
+/* 纵向节点时间轴（节点多，横向放不下） */
+.timeline { margin-top: 20rpx; }
+.tl-row { display: flex; min-height: 74rpx; }
+.tl-rail { position: relative; width: 44rpx; flex: none; }
+.tl-dot { position: absolute; left: 12rpx; top: 8rpx; width: 18rpx; height: 18rpx; border-radius: 50%; background: #dfe4ec; z-index: 2; }
+.tl-dot.dot-done { background: #1f6feb; }
+.tl-dot.dot-current { background: #1f6feb; box-shadow: 0 0 0 6rpx rgba(31,111,235,0.14); }
+.tl-dot.dot-issue { background: #e8862b; box-shadow: 0 0 0 6rpx rgba(232,134,43,0.16); }
+.tl-line { position: absolute; left: 20rpx; top: 26rpx; bottom: 0; width: 3rpx; background: #e6e9ee; z-index: 1; }
+.tl-line.line-done { background: #85b7eb; }
+.tl-body { flex: 1; min-width: 0; padding-bottom: 18rpx; }
+.tl-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10rpx; }
+.tl-name { font-size: 24rpx; color: #9aa2b1; }
+.tl-name.name-on { color: #1f2733; font-weight: 600; }
+.tl-tag { font-size: 18rpx; color: #e8862b; background: #fff4e3; padding: 2rpx 10rpx; border-radius: 999rpx; }
+.tl-status { display: block; font-size: 20rpx; color: #b5bcc8; margin-top: 4rpx; }
+.tl-status.status-current { color: #1f6feb; }
+.tl-status.status-issue { color: #e8862b; }
+.tl-date { display: block; font-size: 20rpx; color: #8a93a3; margin-top: 2rpx; }
+
+.note-line { margin-top: 16rpx; padding: 14rpx 18rpx; background: #f7f9fc; border-radius: 12rpx; font-size: 22rpx; color: #4b5563; line-height: 1.6; }
+.skeleton { background: #e6e9ee; border-radius: 18rpx; }
+.sk-block { height: 260rpx; }
+
+/* 管理端按节点填写的备注 */
+.tl-note { display: block; font-size: 21rpx; color: #4b5563; background: #f7f9fc; border-radius: 10rpx; padding: 8rpx 14rpx; margin-top: 6rpx; line-height: 1.5; }
+
+/* 折叠：默认收起节点时间轴 */
+.fold-toggle { display: flex; align-items: center; justify-content: space-between; margin-top: 20rpx; padding: 18rpx 20rpx; background: #f7f9fc; border-radius: 12rpx; }
+.fold-title { font-size: 24rpx; color: #1f2733; font-weight: 600; }
+.fold-action { font-size: 23rpx; color: #1f6feb; }
+.fold-hint-line { display: block; font-size: 20rpx; color: #b5bcc8; margin-top: 8rpx; }
+
+/* 整张批次卡折叠：只剩标题行 */
+.batch-head-right { display: flex; align-items: center; gap: 16rpx; }
+.batch-fold { font-size: 23rpx; color: #1f6feb; }
+.card-collapsed { padding-bottom: 8rpx; }
+.card-collapsed .batch-head { padding-bottom: 0; border-bottom: none; }
+
+/* 单批次模式下的「查看全部」入口（回到主页全量视图） */
+.all-link { margin-top: 30rpx; text-align: center; font-size: 25rpx; color: #1f6feb; padding: 22rpx; background: #fff; border-radius: 14rpx; }

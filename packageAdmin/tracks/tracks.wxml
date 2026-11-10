@@ -1,0 +1,51 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">物流轨迹更新</view>
+    <view class="hero-sub">{{batch.batch_no || '批次'}} · 邮编 {{batch.zip_code || '—'}} · 普货 / 敏货两组</view>
+    <view class="hero-tip">按节点填写日期与备注，保存后客户端立即可见；系统操作端不展示此数据。</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="skeleton sk-block"></view>
+
+  <block wx:else>
+    <view wx:for="{{rows}}" wx:key="group_name" wx:for-index="idx" wx:for-item="row" class="card group-card">
+      <view class="row-between group-head">
+        <view class="group-name">
+          <text class="zip">{{batch.zip_code || '—'}}</text>
+          <text class="badge {{row.group_name === '普货' ? 'badge-green' : 'badge-red'}}">{{row.group_name}}</text>
+        </view>
+        <text class="muted">组 {{idx + 1}} / 2</text>
+      </view>
+
+      <text class="sec-label">内部单号</text>
+      <input class="form-input" value="{{row.internal_no}}" placeholder="选填" data-idx="{{idx}}" data-field="internal_no" bindinput="onFieldInput" />
+      <text class="sec-label">转单号</text>
+      <input class="form-input" value="{{row.transfer_no}}" placeholder="选填" data-idx="{{idx}}" data-field="transfer_no" bindinput="onFieldInput" />
+
+      <text class="sec-label">当前物流状态（客户端进度停在这一节点）</text>
+      <picker mode="selector" range="{{nodeLabels}}" value="{{row.nodeIndex}}" data-idx="{{idx}}" bindchange="onNodeChange">
+        <view class="picker node-picker">{{row.nodeLabel}}<text class="picker-arrow">▾</text></view>
+      </picker>
+
+      <view class="node-title">节点明细 · {{nodeCount}} 项<text class="node-title-sub">日期与备注按节点显示给客户</text></view>
+      <view wx:for="{{row.nodes}}" wx:for-item="nd" wx:key="key" class="node-row">
+        <view class="node-head">
+          <text class="node-label {{row.current_node === nd.key ? 'label-current' : ''}}">{{nd.label}}</text>
+          <text wx:if="{{nd.issue}}" class="issue-tag">可能异常</text>
+        </view>
+        <view class="node-inputs">
+          <picker mode="date" value="{{nd.date}}" data-idx="{{idx}}" data-key="{{nd.key}}" bindchange="onNodeDateChange">
+            <view class="picker small {{nd.date ? 'date-on' : ''}}">{{nd.date || '选择日期'}}</view>
+          </picker>
+          <input class="form-input small" value="{{nd.note}}" placeholder="备注（选填）" data-idx="{{idx}}" data-key="{{nd.key}}" bindinput="onNodeInput" />
+        </view>
+      </view>
+    </view>
+
+    <button class="btn-primary mt" disabled="{{saving}}" bindtap="onSave">{{saving ? '保存中...' : '保存并同步客户端'}}</button>
+  </block>
+
+  <view class="card notice">
+    节点与客户端完全一致（含国内 / 目的国海关查验、船期延误、派送异常等可能异常节点）；只有当前状态及之前已填的节点会高亮。留空的节点在客户端显示「待更新」。
+  </view>
+</view>

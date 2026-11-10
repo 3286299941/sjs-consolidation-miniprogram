@@ -1,0 +1,89 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/packages/packages",
+    "pages/confirm/confirm",
+    "pages/mine/mine"
+  ],
+  "subpackages": [
+    {
+      "root": "packageClient",
+      "name": "client",
+      "pages": [
+        "bind/bind",
+        "package-detail/package-detail",
+        "tracks/tracks",
+        "batch-bill/batch-bill",
+        "vip/vip",
+        "dim-confirm/dim-confirm"
+      ]
+    },
+    {
+      "root": "packageAdmin",
+      "name": "admin",
+      "pages": [
+        "home/home",
+        "customers/customers",
+        "customer-detail/customer-detail",
+        "batches/batches",
+        "batch-bill/batch-bill",
+        "board/board",
+        "audit/audit",
+        "orphans/orphans",
+        "tracks/tracks",
+        "vip-ship/vip-ship"
+      ]
+    }
+  ],
+  "preloadRule": {
+    "pages/index/index": {
+      "network": "all",
+      "packages": [
+        "client"
+      ]
+    }
+  },
+  "window": {
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "速捷供应链集运",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f4f6f9",
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#9a9fa8",
+    "selectedColor": "#1f6feb",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/packages/packages",
+        "text": "我的货物",
+        "iconPath": "assets/icons/box.png",
+        "selectedIconPath": "assets/icons/box-active.png"
+      },
+      {
+        "pagePath": "pages/confirm/confirm",
+        "text": "发货确认",
+        "iconPath": "assets/icons/send.png",
+        "selectedIconPath": "assets/icons/send-active.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "assets/icons/mine.png",
+        "selectedIconPath": "assets/icons/mine-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

@@ -1,0 +1,23 @@
+<view class="pkg-card" catchtap="onTap">
+  <view class="pkg-head row-between">
+    <view class="row flex-1">
+      <text class="pkg-no">{{viewItem.tracking_number}}</text>
+      <view class="tag {{viewItem.nature_class}} gap-8">{{viewItem.nature_display}}</view>
+      <view wx:if="{{viewItem.is_danger}}" class="tag tag-red">危险品</view>
+    </view>
+    <view class="tag {{viewItem.status_class}}">{{viewItem.status}}</view>
+  </view>
+
+  <view class="pkg-meta">
+    <text>入库 {{viewItem.entry_time || '—'}}</text>
+    <text wx:if="{{viewItem.batch_no}}">｜批次 {{viewItem.batch_no}}</text>
+    <text wx:if="{{viewItem.shelf_slot}}">｜货位 {{viewItem.shelf_slot}}</text>
+  </view>
+
+  <view wx:if="{{viewItem.customer_remark}}" class="pkg-remark">备注：{{viewItem.customer_remark}}</view>
+
+  <view class="pkg-foot row-between">
+    <text class="muted">点击查看详情</text>
+    <text class="copy-btn" catchtap="onCopy">复制单号</text>
+  </view>
+</view>

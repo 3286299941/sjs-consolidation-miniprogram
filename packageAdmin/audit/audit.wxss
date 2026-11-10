@@ -1,0 +1,16 @@
+.head-card .subtitle { display: block; line-height: 1.7; margin-top: 12rpx; }
+.muted + .muted { display: block; margin-top: 8rpx; }
+.btn-row { display: flex; margin-top: 24rpx; padding-top: 22rpx; border-top: 2rpx solid #edf0f4; }
+.act-btn {
+  flex: 1; text-align: center; padding: 18rpx 0; border-radius: 10rpx;
+  font-size: 28rpx; margin-right: 16rpx;
+}
+.act-btn:last-child { margin-right: 0; }
+.reject { background: #fdecee; color: #d93644; }
+.approve { background: #1f6feb; color: #ffffff; }
+.sk-block { height: 260rpx; border-radius: 16rpx; }
+.notice { background: #f7f9fc; font-size: 24rpx; color: #6b7484; line-height: 1.8; }
+
+.addr { display: block; margin-top: 6rpx; line-height: 1.6; word-break: break-all; }
+
+.addr { display: block; margin-top: 6rpx; line-height: 1.6; word-break: break-all; }

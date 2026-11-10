@@ -1,0 +1,82 @@
+.page { padding: 24rpx 24rpx 40rpx; background: #eef1f6; min-height: 100vh; }
+
+.hero {
+  background: linear-gradient(135deg, #16243f, #243b5e);
+  border-radius: 24rpx; padding: 36rpx 32rpx; margin-bottom: 20rpx;
+  box-shadow: 0 10rpx 30rpx rgba(22, 36, 63, 0.28);
+}
+.hero-title { font-size: 38rpx; font-weight: 700; color: #fff; }
+.hero-sub { margin-top: 10rpx; display: block; font-size: 24rpx; color: rgba(255, 255, 255, 0.85); line-height: 1.6; }
+
+/* 搜索条 */
+.search-bar {
+  position: relative; margin-bottom: 18rpx;
+  background: #fff; border-radius: 14rpx; padding: 0 24rpx;
+  box-shadow: 0 4rpx 18rpx rgba(31, 42, 60, 0.05);
+}
+.search-input { height: 80rpx; font-size: 28rpx; }
+.search-clear {
+  position: absolute; right: 24rpx; top: 24rpx;
+  width: 36rpx; height: 36rpx; line-height: 36rpx; text-align: center;
+  border-radius: 50%; background: #e6e9ef; color: #6b7484; font-size: 22rpx;
+}
+
+.card {
+  background: #fff; border-radius: 20rpx; padding: 28rpx 24rpx;
+  margin-bottom: 18rpx; box-shadow: 0 4rpx 18rpx rgba(31, 42, 60, 0.05);
+}
+
+.vip-card .vip-head { display: flex; align-items: baseline; justify-content: space-between; }
+.vip-name { font-size: 32rpx; font-weight: 700; color: #1f2733; }
+.vip-no { font-size: 23rpx; color: #9a9fa8; }
+.vip-zip { display: block; margin-top: 8rpx; font-size: 24rpx; color: #9a9fa8; }
+
+.addr-block {
+  margin-top: 20rpx; padding: 20rpx; background: #f5f7fa; border-radius: 14rpx;
+}
+.addr-title { font-size: 24rpx; font-weight: 600; color: #3a6df0; margin-bottom: 12rpx; }
+.addr-line { display: flex; font-size: 26rpx; line-height: 1.8; }
+.addr-key { width: 96rpx; color: #9a9fa8; flex-shrink: 0; }
+.addr-val { flex: 1; color: #1f2733; word-break: break-all; }
+
+.row-between { display: flex; align-items: center; justify-content: space-between; }
+.foot { margin-top: 20rpx; padding-top: 20rpx; border-top: 2rpx solid #f0f2f5; }
+.muted { font-size: 23rpx; color: #9a9fa8; }
+
+.mini-btn {
+  padding: 12rpx 26rpx; border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.2); color: #fff; font-size: 24rpx;
+}
+.mini-btn.ghost { background: rgba(255, 255, 255, 0.14); }
+.card .mini-btn,
+.card .mini-btn.ghost {
+  background: #eaf0ff; color: #3a6df0; font-weight: 600; margin-right: 0;
+}
+
+.sk-block { height: 220rpx; border-radius: 20rpx; background: #eef1f6; }
+.empty { text-align: center; color: #9a9fa8; font-size: 26rpx; }
+.notice { background: #f5f7fa; font-size: 24rpx; color: #6b7484; line-height: 1.8; padding: 24rpx; }
+
+/* VIP 批次卡片（与常规批次页一致） */
+.batch-card { margin-bottom: 18rpx; }
+.batch-head { display: flex; align-items: center; justify-content: space-between; }
+.batch-no { font-size: 32rpx; font-weight: 700; color: #1f2733; }
+.head-right { display: flex; align-items: center; }
+.head-right .mini-btn { margin-left: 12rpx; }
+.batch-sub { display: block; margin-top: 10rpx; font-size: 25rpx; color: #6b7484; }
+
+.tag {
+  padding: 6rpx 18rpx; border-radius: 999rpx; font-size: 22rpx; font-weight: 600;
+}
+.tag-green { background: #e6f7ee; color: #1aa15a; }
+.tag-gray { background: #eef0f3; color: #9a9fa8; }
+
+.stat-grid {
+  display: flex; margin-top: 22rpx;
+  background: #f7f9fc; border-radius: 14rpx; padding: 18rpx 0;
+}
+.stat-cell { flex: 1; display: flex; flex-direction: column; align-items: center; }
+.stat-num { font-size: 34rpx; font-weight: 700; color: #1f2733; }
+.stat-orange { color: #f0883a; }
+.stat-blue { color: #3a6df0; }
+.stat-lab { margin-top: 4rpx; font-size: 22rpx; color: #9a9fa8; }

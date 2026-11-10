@@ -1,0 +1,58 @@
+<view class="page">
+  <!-- 客户身份卡 -->
+  <view class="card profile-card">
+    <view class="avatar">
+      <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" mode="aspectFill" />
+      <text wx:else>{{bound ? (profile.customer.name || '客') : '?'}}</text>
+    </view>
+    <view class="col flex-1">
+      <text class="title">{{profile.nickname || (bound ? (profile.customer.name || '客户') : '未绑定客户')}}</text>
+      <text class="muted">{{bound ? '客户号 ' + profile.customer.customer_no : '绑定后可查看本人货物与发货意向'}}</text>
+    </view>
+    <view wx:if="{{bound && profile.customer.is_vip}}" class="tag tag-orange">VIP</view>
+  </view>
+
+  <view wx:if="{{!profile.avatar || !profile.nickname}}" class="card wechat-card">
+    <text class="title">完善微信资料</text>
+    <text class="subtitle">设置微信头像与昵称，便于仓库核对您的身份。</text>
+    <button class="btn-avatar" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">点击选择微信头像</button>
+    <input class="nick-input" type="nickname" placeholder="点击获取微信昵称" value="{{profile.nickname}}" bindblur="onNickInput" bindnicknamereview="onNickInput" />
+  </view>
+
+  <view wx:if="{{bound}}" class="card info-card">
+    <view class="info-row"><text class="info-label">客户条码</text><text class="info-value">{{profile.customer.barcode || '—'}}</text></view>
+    <view class="info-row"><text class="info-label">归属邮编</text><text class="info-value">{{profile.customer.zip_code || '—'}}</text></view>
+    <view class="info-row"><text class="info-label">绑定状态</text><text class="info-value">已绑定</text></view>
+    <view class="info-row"><text class="info-label">手机尾号</text><text class="info-value">{{profile.customer.phone_mask || '—'}}</text></view>
+  </view>
+
+  <view class="card cell-card">
+    <view wx:if="{{!bound}}" class="cell" bindtap="goBind">
+      <text>绑定客户身份</text><text class="cell-arrow">›</text>
+    </view>
+    <view wx:if="{{bound}}" class="cell" bindtap="goDimConfirm">
+      <text>尺寸确认</text><text class="cell-arrow">›</text>
+    </view>
+    <view wx:else class="cell" bindtap="onUnbind">
+      <text>解绑 / 切换客户</text><text class="cell-arrow">›</text>
+    </view>
+    <!-- openPrivacyContract 有基础库版本要求，需以微信官方文档核实并在真机验证 -->
+    <button class="cell" open-type="openPrivacyContract">
+      隐私保护指引<text class="cell-arrow">›</text>
+    </button>
+    <view class="cell" bindtap="onAbout">
+      <text>关于与周流程说明</text><text class="cell-arrow">›</text>
+    </view>
+  </view>
+
+  <view wx:if="{{isAdmin}}" class="card cell-card">
+    <view class="card-head">管理端（内部使用）</view>
+    <view class="cell" bindtap="goAdminCustomers"><text>客户总览</text><text class="cell-arrow">›</text></view>
+    <view class="cell" bindtap="goAdminBatches"><text>批次管理</text><text class="cell-arrow">›</text></view>
+    <view class="cell" bindtap="goAdminBoard"><text>意向看板</text><text class="cell-arrow">›</text></view>
+    <view class="cell" bindtap="goAdminAudit"><text>绑定审核</text><text class="cell-arrow">›</text></view>
+  </view>
+
+  <button class="btn-ghost logout-btn" bindtap="onLogout">重新登录</button>
+  <view class="version">速捷供应链 · {{version}}</view>
+</view>

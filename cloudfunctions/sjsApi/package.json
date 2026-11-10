@@ -1,0 +1,9 @@
+{
+  "name": "sjsApi",
+  "version": "1.0.0",
+  "description": "速捷供应链小程序云函数代理",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

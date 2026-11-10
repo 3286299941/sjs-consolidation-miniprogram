@@ -1,0 +1,15 @@
+.no { font-size: 32rpx; font-weight: 600; color: #1f2733; max-width: 440rpx; }
+.tags { display: flex; margin-top: 20rpx; }
+.tags .tag { margin-right: 12rpx; }
+.head .btn-ghost { width: 100%; }
+.info-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 22rpx 0; border-bottom: 2rpx solid #edf0f4; font-size: 27rpx;
+}
+.info-row:last-child { border-bottom: none; }
+.label { color: #6b7484; flex-shrink: 0; }
+.value { color: #1f2733; text-align: right; max-width: 420rpx; }
+.notice { background: #f7f9fc; }
+.line { font-size: 24rpx; color: #6b7484; line-height: 1.9; margin-top: 10rpx; }
+.warn { color: #d98209; }
+.mt { margin-top: 28rpx; }

@@ -1,0 +1,160 @@
+<view class="page confirm-page">
+  <view wx:if="{{!bound}}" class="card">
+    <view class="title">绑定后确认发货</view>
+    <text class="subtitle">货件数据属于客户隐私，需先完成绑定审核。</text>
+    <button class="btn-primary mt" bindtap="goBind">去绑定</button>
+  </view>
+
+  <block wx:elif="{{loading}}">
+    <view wx:for="{{[1,2,3]}}" wx:key="*this" class="skeleton sk-card"></view>
+  </block>
+
+  <block wx:else>
+    <!-- 说明 -->
+    <view class="head-card">
+      <view class="row-between">
+        <text class="head-title">本周发货确认</text>
+        <text wx:if="{{weekLabel}}" class="head-week">{{weekLabel}}</text>
+      </view>
+      <text wx:if="{{deadline}}" class="head-sub">请于 {{deadline}} 前确认，仓库按确认结果打包</text>
+      <text class="head-sub">在库货件默认全部本周发出；如有特殊要求请写在备注，仓库按备注操作。</text>
+    </view>
+
+    <!-- 已确认 / 锁定 -->
+    <view wx:if="{{intent && intent.status === 'active'}}" class="state-card state-active">
+      <text class="state-title">已确认 {{intent.item_count}} 件 · 可修改</text>
+      <text class="state-sub">确认于 {{intent.confirmed_at}}</text>
+    </view>
+    <view wx:if="{{locked}}" class="state-card state-locked">
+      <text class="state-title">仓库已接单，本次确认已锁定</text>
+      <text class="state-sub">如需修改请联系仓库</text>
+    </view>
+
+    <!-- ① 发货方式（合并原「发货意向」页） -->
+    <text class="section-label">① 选择发货方式</text>
+    <view class="delivery-list">
+      <view
+        wx:for="{{deliveryOptions}}"
+        wx:key="key"
+        wx:for-item="opt"
+        class="delivery-item {{deliveryType === opt.key ? 'delivery-on' : ''}} {{locked ? 'opt-locked' : ''}}"
+        data-key="{{opt.key}}"
+        bindtap="onPickDelivery"
+      >
+        <view class="row-between">
+          <text class="delivery-label">{{opt.label}}</text>
+          <view class="radio {{deliveryType === opt.key ? 'radio-on' : ''}}"></view>
+        </view>
+        <text wx:if="{{opt.key === 'direct'}}" class="delivery-desc">发到您的个人地址，无需批次（VIP 单独发货）</text>
+      </view>
+    </view>
+
+    <!-- 单独地址：说明 + 地址表单 -->
+    <view wx:if="{{deliveryType === 'direct'}}" class="card">
+      <view class="notice-mini">
+        未打包的包裹没有重量信息：满 {{minWeight}} kg 由仓库打包称重后核验；
+        不足 {{minWeight}} kg 会转为拼邮发货，或多件合并后再发。
+      </view>
+      <view wx:if="{{vipAddrSynced}}" class="vip-sync-hint">
+        ✓ 已从您的 VIP 档案同步收货地址，可直接确认或按需修改
+      </view>
+      <input
+        class="form-input mt-s"
+        value="{{addrName}}"
+        placeholder="收件人姓名"
+        data-field="addrName"
+        bindinput="onAddrInput"
+      />
+      <input
+        class="form-input mt-s"
+        value="{{addrPhone}}"
+        placeholder="联系电话"
+        data-field="addrPhone"
+        bindinput="onAddrInput"
+      />
+      <input
+        class="form-input mt-s"
+        value="{{addrLine}}"
+        placeholder="详细收货地址"
+        data-field="addrLine"
+        bindinput="onAddrInput"
+      />
+      <input
+        class="form-input mt-s"
+        value="{{addrZip}}"
+        placeholder="邮编"
+        data-field="addrZip"
+        bindinput="onAddrInput"
+      />
+    </view>
+
+    <!-- 暂不发货说明 -->
+    <view wx:if="{{deliveryType === 'none'}}" class="sub-box">
+      <text class="sub-line">本周不安排发货，货物继续留在货架保持「已入库」，下周仍可再选。</text>
+    </view>
+
+    <!-- ② 货件列表（暂不发货时隐藏）：默认全部发出，无需勾选 -->
+    <block wx:if="{{deliveryType && deliveryType !== 'none'}}">
+      <text class="section-label">② 本周发货货件</text>
+
+      <!-- 汇总提示 -->
+      <view wx:if="{{total > 0}}" class="all-hint">共 {{total}} 件 · 默认全部打包发出，特殊要求写在备注</view>
+
+      <!-- 无货 -->
+      <empty-state
+        wx:if="{{total === 0}}"
+        mark="▤"
+        text="暂无在库货件，仓库入库后会出现在这里"
+      />
+
+      <!-- 货件列表（全部 = 系统里的已入库包裹，无批次分组） -->
+      <view class="group">
+        <view wx:for="{{items}}" wx:key="id" class="item-row">
+          <view class="item-main">
+            <text class="item-no">{{item.tracking_number}}</text>
+            <text class="item-time">入库 {{item.entry_time_display}}</text>
+          </view>
+          <view class="tag tag-green">已入库</view>
+        </view>
+      </view>
+    </block>
+
+    <!-- ③ 备注 -->
+    <text wx:if="{{deliveryType}}" class="section-label">③ 备注（选填）</text>
+    <view wx:if="{{deliveryType}}" class="remark-card">
+      <textarea
+        class="remark-input"
+        value="{{remark}}"
+        maxlength="200"
+        disabled="{{locked}}"
+        placeholder="如：易碎轻放 / 某件先不发 / 取货时间"
+        bindinput="onRemarkInput"
+      />
+      <text class="remark-count">{{remarkCount}}/200</text>
+    </view>
+
+    <!-- 取消确认 -->
+    <view wx:if="{{intent && intent.status === 'active' && !locked}}" class="cancel-row">
+      <text class="cancel-btn" bindtap="onCancel">取消本周确认</text>
+    </view>
+
+    <view class="foot-space"></view>
+
+    <!-- 底部固定栏 -->
+    <view wx:if="{{deliveryType}}" class="foot-bar">
+      <view class="foot-left">
+        <text class="foot-num">{{total}}</text>
+        <text class="foot-lab">{{deliveryType === 'none' ? '件留仓' : '件待发'}}</text>
+      </view>
+      <view
+        wx:if="{{locked}}"
+        class="foot-btn foot-disabled"
+      >仓库已接单</view>
+      <view
+        wx:else
+        class="foot-btn {{submitting ? 'foot-loading' : ''}}"
+        bindtap="onSubmit"
+      >{{deliveryType === 'none' ? '确认暂不发货' : (intent && intent.status === 'active' ? '更新确认' : '确认发货')}}</view>
+    </view>
+  </block>
+</view>

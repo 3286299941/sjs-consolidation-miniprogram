@@ -1,0 +1,126 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">批次账单</view>
+    <view class="hero-sub">{{batchNo}} · 仅统计已打包产生运费的包裹；已付款的不计入待付</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="sk-block"></view>
+
+  <block wx:else>
+    <view class="total-card">
+      <view class="total-row">
+        <text class="total-lab">待付合计</text>
+        <text class="total-amt">{{currency}}{{totals.pending_total}}</text>
+      </view>
+      <view class="total-sub">
+        <text>普货 {{currency}}{{totals.normal_pending}}</text>
+        <text>敏货 {{currency}}{{totals.sensitive_pending}}</text>
+      </view>
+      <view class="dispatch-row">
+        <text wx:if="{{dispatched}}" class="disp-badge on">已派发 · {{dispatched_at}}</text>
+        <text wx:else class="disp-badge">未派发</text>
+        <button class="dispatch-btn {{dispatched ? 'recall' : ''}}" bindtap="onDispatch">{{dispatched ? '撤回派发' : '派发账单'}}</button>
+      </view>
+      <view wx:if="{{dimBlocked}}" class="dispatch-block">⚠ 尺寸信息未全部确认，暂不可派发账单</view>
+    </view>
+
+    <!-- 尺寸信息推送确认：推送后客户在「尺寸确认」中确认，全部确认方可派发账单 -->
+    <view class="dim-card">
+      <view class="dim-head">
+        <text class="dim-title">尺寸信息推送确认</text>
+        <text wx:if="{{dim.pushed}}" class="dim-badge on">已推送 · {{dim.pushed_at}}</text>
+        <text wx:else class="dim-badge">未推送</text>
+      </view>
+      <view class="dim-progress">
+        <text>客户确认进度：{{dim.confirmed_count}} / {{dim.total}}</text>
+        <text wx:if="{{dim.pushed && dim.all_confirmed}}" class="dim-ok">✓ 全部已确认</text>
+      </view>
+      <view wx:if="{{dim.confirms.length}}" class="dim-list">
+        <view wx:for="{{dim.confirms}}" wx:key="customer_id" class="dim-item">
+          <text class="dim-name">{{item.name}}</text>
+          <text class="dim-flag {{item.confirmed ? 'done' : 'pending'}}">{{item.confirmed ? '已确认' : '待确认'}}</text>
+        </view>
+      </view>
+      <button class="dim-btn {{dim.pushed ? 'recall' : ''}}" bindtap="onPushDims">{{dim.pushed ? '撤回推送' : '推送尺寸信息'}}</button>
+      <text class="dim-tip" wx:if="{{dim.pushed && !dim.all_confirmed}}">尚有客户未确认，派发账单将被拦截。</text>
+    </view>
+
+    <!-- 筛选 + 搜索 -->
+    <view class="filter-bar">
+      <view class="seg">
+        <view class="seg-item {{filterMode==='all' ? 'on' : ''}}" data-mode="all" bindtap="onFilterTap">全部</view>
+        <view class="seg-item {{filterMode==='unpaid' ? 'on' : ''}}" data-mode="unpaid" bindtap="onFilterTap">未付款</view>
+        <view class="seg-item {{filterMode==='paid' ? 'on' : ''}}" data-mode="paid" bindtap="onFilterTap">已付款</view>
+      </view>
+      <view class="search-box">
+        <input class="search-input" placeholder="搜索客户名" value="{{keyword}}" bindinput="onKeywordInput" confirm-type="search" />
+      </view>
+    </view>
+
+    <view wx:if="{{filteredItems.length === 0}}" class="empty-hint">没有符合条件的客户</view>
+
+    <view wx:for="{{filteredItems}}" wx:key="customer_id" wx:for-index="idx" class="cust-card">
+      <view class="cust-name">
+        {{item.name}}
+        <text wx:if="{{item.all_settled}}" class="paid-flag">已付清</text>
+      </view>
+
+      <block wx:if="{{item.normal.count > 0}}">
+        <view class="cust-line">
+          <view class="cust-line-top">
+            <text class="tag normal">普货</text>
+            <text class="cust-meta">{{item.normal.count}} 件</text>
+            <view class="cw-edit">
+              <text class="cw-lab">计费重</text>
+              <input class="cw-input" type="digit" value="{{item.normal.chargeable}}"
+                     data-idx="{{idx}}" data-cid="{{item.customer_id}}" data-nature="normal"
+                     bindinput="onChargeableInput" bindblur="onChargeableBlur" />
+              <text class="cw-unit">kg</text>
+            </view>
+            <text class="cust-amt">{{currency}}{{item.normal.pending_freight}}</text>
+          </view>
+          <view wx:if="{{item.normal_dims.length}}" class="cust-dims">
+            <view wx:for="{{item.normal_dims}}" wx:for-item="dl" wx:key="*this" class="dim-line">{{dl}}</view>
+          </view>
+          <view class="cust-line-bottom">
+            <text wx:if="{{item.normal.paid_freight > 0}}" class="paid-amt">已付 {{currency}}{{item.normal.paid_freight}}</text>
+            <text class="cust-weight-s">{{item.normal_weight_display}}</text>
+          </view>
+        </view>
+      </block>
+
+      <block wx:if="{{item.sensitive.count > 0}}">
+        <view class="cust-line">
+          <view class="cust-line-top">
+            <text class="tag sensitive">敏货</text>
+            <text class="cust-meta">{{item.sensitive.count}} 件</text>
+            <view class="cw-edit">
+              <text class="cw-lab">计费重</text>
+              <input class="cw-input" type="digit" value="{{item.sensitive.chargeable}}"
+                     data-idx="{{idx}}" data-cid="{{item.customer_id}}" data-nature="sensitive"
+                     bindinput="onChargeableInput" bindblur="onChargeableBlur" />
+              <text class="cw-unit">kg</text>
+            </view>
+            <text class="cust-amt">{{currency}}{{item.sensitive.pending_freight}}</text>
+          </view>
+          <view wx:if="{{item.sensitive_dims.length}}" class="cust-dims">
+            <view wx:for="{{item.sensitive_dims}}" wx:for-item="dl" wx:key="*this" class="dim-line">{{dl}}</view>
+          </view>
+          <view class="cust-line-bottom">
+            <text wx:if="{{item.sensitive.paid_freight > 0}}" class="paid-amt">已付 {{currency}}{{item.sensitive.paid_freight}}</text>
+            <text class="cust-weight-s">{{item.sensitive_weight_display}}</text>
+          </view>
+        </view>
+      </block>
+
+      <view class="cust-total-row">
+        <text class="cust-total-lab">普敏合计</text>
+        <text class="cust-total-amt">{{currency}}{{item.item_total}}</text>
+        <view wx:if="{{item.pending_total > 0}}" class="settle-btn" data-cid="{{item.customer_id}}" catchtap="onSettle">标记付款</view>
+        <text wx:else class="settle-done">已结清</text>
+      </view>
+    </view>
+
+    <text class="hint">计费重可直接修改，运费（普货 ¥25/kg、敏货 ¥35/kg）随输入实时更新；确认无误后点「派发账单」才推送给客户端。点「标记付款」一次性结清该客户在本批次的普货+敏货未付款订单。已派发账单前，客户端看不到任何运费。</text>
+  </block>
+</view>

@@ -1,0 +1,36 @@
+<view class="page">
+  <empty-state wx:if="{{missing}}" text="数据已失效，请返回列表重新进入" buttonText="返回" bind:action="goBack" />
+
+  <block wx:elif="{{item}}">
+    <view class="card head">
+      <view class="row-between">
+        <text class="no">{{item.tracking_number}}</text>
+        <view class="tag {{item.status_class}}">{{item.status}}</view>
+      </view>
+      <view class="tags">
+        <view class="tag {{item.nature_class}}">{{item.nature_display}}</view>
+        <view wx:if="{{item.is_danger}}" class="tag tag-red">危险品</view>
+        <view wx:if="{{item.batch_no}}" class="tag tag-blue">{{item.batch_no}}</view>
+      </view>
+      <button class="btn-ghost mt" bindtap="onCopy">复制快递单号</button>
+    </view>
+
+    <view class="card">
+      <text class="title">包裹信息</text>
+      <view class="info-row"><text class="label">入库时间</text><text class="value">{{item.entry_time_display}}</text></view>
+      <view class="info-row"><text class="label">货物属性</text><text class="value">{{item.nature_display}}</text></view>
+      <view class="info-row"><text class="label">所属批次</text><text class="value">{{item.batch_no || '尚未指定'}}</text></view>
+      <view class="info-row"><text class="label">货架货位</text><text class="value">{{item.shelf_slot || '—'}}</text></view>
+      <view class="info-row"><text class="label">危险品标记</text><text class="value">{{item.is_danger ? '是' : '否'}}</text></view>
+      <view class="info-row"><text class="label">客户备注</text><text class="value">{{item.customer_remark || '无'}}</text></view>
+    </view>
+
+    <view class="card notice">
+      <text class="strong">状态说明</text>
+      <view class="line">· 包裹状态由仓库操作端按周流程维护：已入库 → 待打包 → 已打包 → 已发货 → 已完成。</view>
+      <view class="line">· 提交发货意向不会立即改变这里的状态；如信息有疑问请联系仓库操作员。</view>
+      <view wx:if="{{item.nature_display === '待确认'}}" class="line warn">· 该件尚待仓库确认，普 / 敏属性暂不显示，确认后可在此查看。</view>
+      <view wx:if="{{item.nature_display === '待核实'}}" class="line warn">· 该件普敏属性存在脏值，已标记「待核实」，请以仓库复核结果为准。</view>
+    </view>
+  </block>
+</view>

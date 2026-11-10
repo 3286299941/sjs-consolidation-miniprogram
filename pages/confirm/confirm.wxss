@@ -1,0 +1,122 @@
+.confirm-page { padding-bottom: 0; }
+
+.sk-card { height: 200rpx; border-radius: 16rpx; margin-bottom: 20rpx; }
+.mt { margin-top: 24rpx; }
+
+/* ---------- 顶部说明 ---------- */
+.head-card {
+  background: #ffffff; border-radius: 16rpx; padding: 26rpx;
+  margin-bottom: 16rpx;
+}
+.head-title { font-size: 32rpx; font-weight: 600; color: #1f2733; }
+.head-week { font-size: 22rpx; color: #9a9fa8; }
+.head-sub {
+  display: block; font-size: 23rpx; color: #6b7484;
+  line-height: 1.6; margin-top: 10rpx;
+}
+
+/* ---------- 状态 ---------- */
+.state-card { border-radius: 14rpx; padding: 20rpx 24rpx; margin-bottom: 16rpx; }
+.state-active { background: #eaf2ff; }
+.state-locked { background: #fff1f0; }
+.state-title { display: block; font-size: 26rpx; font-weight: 600; color: #1f6feb; }
+.state-locked .state-title { color: #d4380d; }
+.state-sub { display: block; font-size: 22rpx; color: #6b7484; margin-top: 6rpx; }
+
+/* ---------- 默认全选提示 ---------- */
+.all-hint {
+  background: #eaf2ff; color: #1f6feb; font-size: 23rpx;
+  padding: 16rpx 22rpx; border-radius: 12rpx; margin-bottom: 16rpx;
+  line-height: 1.6;
+}
+
+/* ---------- 货件列表 ---------- */
+.group { background: #ffffff; border-radius: 16rpx; margin-bottom: 16rpx; overflow: hidden; }
+
+.item-row {
+  display: flex; align-items: center; padding: 22rpx 24rpx;
+  border-top: 2rpx solid #f4f6f9;
+}
+.item-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.item-no {
+  font-size: 27rpx; color: #1f2733; line-height: 1.4;
+  font-family: Menlo, Consolas, monospace; word-break: break-all;
+}
+.item-time { font-size: 22rpx; color: #9a9fa8; margin-top: 6rpx; }
+
+/* ---------- 备注 ---------- */
+.remark-card {
+  background: #ffffff; border-radius: 16rpx; padding: 24rpx; margin-bottom: 16rpx;
+}
+.remark-lab { font-size: 25rpx; color: #1f2733; font-weight: 600; }
+.remark-input {
+  width: 100%; min-height: 140rpx; margin-top: 14rpx;
+  font-size: 25rpx; line-height: 1.6; color: #1f2733;
+  background: #f8fafc; border-radius: 12rpx; padding: 18rpx;
+  box-sizing: border-box;
+}
+.remark-count {
+  display: block; text-align: right; font-size: 21rpx;
+  color: #b9bfc9; margin-top: 8rpx;
+}
+
+/* ---------- 取消 ---------- */
+.cancel-row { text-align: center; padding: 8rpx 0 16rpx; }
+.cancel-btn { font-size: 24rpx; color: #9a9fa8; }
+
+/* ---------- 底部固定栏 ---------- */
+.foot-space { height: 140rpx; }
+.foot-bar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  background: #ffffff; padding: 18rpx 28rpx calc(18rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 20rpx rgba(31, 39, 51, 0.06);
+}
+.foot-left { display: flex; align-items: baseline; }
+.foot-num { font-size: 40rpx; font-weight: 600; color: #1f6feb; }
+.foot-lab { font-size: 23rpx; color: #6b7484; margin-left: 8rpx; }
+.foot-btn {
+  min-width: 300rpx; text-align: center;
+  background: #1f6feb; color: #ffffff; font-size: 29rpx;
+  padding: 24rpx 0; border-radius: 999rpx;
+}
+.foot-loading { opacity: 0.6; }
+.foot-disabled { background: #d5dbe4; color: #8a8f99; }
+
+/* ---------- ① 发货方式（合并自原 intent 页） ---------- */
+.section-label {
+  display: block; font-size: 26rpx; font-weight: 600; color: #1f2733;
+  margin: 20rpx 0 16rpx;
+}
+.delivery-item {
+  border: 2rpx solid #e6eaf0; border-radius: 14rpx; padding: 22rpx;
+  margin-bottom: 16rpx; background: #ffffff;
+}
+.delivery-on { border-color: #1f6feb; background: #f5f9ff; }
+.delivery-label { font-size: 29rpx; font-weight: 600; color: #1f2733; }
+.delivery-on .delivery-label { color: #1f6feb; }
+.delivery-desc { display: block; font-size: 23rpx; color: #9a9fa8; margin-top: 8rpx; line-height: 1.5; }
+.radio {
+  width: 32rpx; height: 32rpx; border-radius: 50%;
+  border: 2rpx solid #c9cfd8; flex-shrink: 0;
+}
+.radio-on { border-color: #1f6feb; background: #1f6feb; box-shadow: inset 0 0 0 6rpx #ffffff; }
+.opt-locked { opacity: 0.55; }
+.sub-box {
+  margin-top: 4rpx; padding: 18rpx; background: #ffffff;
+  border-radius: 10rpx; border: 2rpx dashed #dbe4f3; margin-bottom: 16rpx;
+}
+.sub-line { display: block; font-size: 23rpx; color: #6b7484; line-height: 1.7; margin-top: 4rpx; }
+.notice-mini {
+  font-size: 23rpx; color: #d98209; background: #fff8ec;
+  padding: 12rpx 16rpx; border-radius: 8rpx; line-height: 1.6;
+}
+.vip-sync-hint {
+  font-size: 23rpx; color: #1f9e6b; background: #ecfaf3;
+  padding: 12rpx 16rpx; border-radius: 8rpx; line-height: 1.6; margin-top: 12rpx;
+}
+.form-input {
+  background: #f7f9fc; border-radius: 10rpx; height: 78rpx;
+  padding: 0 20rpx; font-size: 26rpx;
+}
+.mt-s { margin-top: 12rpx; }

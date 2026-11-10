@@ -1,0 +1,79 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">批次管理</view>
+    <view class="hero-sub">周三下午按邮编建立当周批次；同一邮编同时只允许一个未锁定批次。</view>
+    <view class="head-actions">
+      <view class="mini-btn" bindtap="toggleForm">{{showForm ? '收起表单' : '+ 新建批次'}}</view>
+      <view class="mini-btn ghost" bindtap="goAudit">绑定审核 ›</view>
+    </view>
+  </view>
+
+  <!-- 新建批次 -->
+  <view wx:if="{{showForm}}" class="card form-card">
+    <text class="form-title">新建批次</text>
+    <view class="form-item">
+      <text class="form-label">批次号</text>
+      <input class="form-input" value="{{form.batch_no}}" placeholder="如 150批" data-field="batch_no" bindinput="onFieldInput" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">邮编</text>
+      <input class="form-input" value="{{form.zip_code}}" placeholder="如 90210" data-field="zip_code" bindinput="onFieldInput" />
+    </view>
+    <view class="form-tip">批次不区分普 / 敏：一个批次可同时包含两类货物，属性在打包时判定。</view>
+    <view class="form-item">
+      <text class="form-label">普货渠道</text>
+      <input class="form-input" value="{{form.normal_channel}}" placeholder="选填" data-field="normal_channel" bindinput="onFieldInput" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">敏货渠道</text>
+      <input class="form-input" value="{{form.sensitive_channel}}" placeholder="选填" data-field="sensitive_channel" bindinput="onFieldInput" />
+    </view>
+    <button class="btn-primary mt" disabled="{{submitting}}" bindtap="onCreateBatch">{{submitting ? '提交中...' : '建立批次'}}</button>
+  </view>
+
+  <view wx:if="{{loading}}" class="skeleton sk-block"></view>
+
+  <block wx:else>
+    <view wx:for="{{batches}}" wx:key="id" class="card batch-card">
+      <view class="batch-head">
+        <view class="batch-no">{{item.batch_no}}</view>
+        <view class="head-right">
+          <view class="tag {{item.is_locked ? 'tag-gray' : 'tag-green'}}">{{item.is_locked ? '已锁定' : '未锁定'}}</view>
+          <view class="mini-btn ghost" data-id="{{item.id}}" bindtap="goTracks">轨迹更新 ›</view>
+          <view class="mini-btn ghost" data-id="{{item.id}}" bindtap="goBill">账单 ›</view>
+        </view>
+      </view>
+      <text class="batch-zip">邮编 {{item.zip_code}} · {{item.customer_count || 0}} 位客户</text>
+
+      <view class="stat-grid">
+        <view class="stat-cell">
+          <text class="stat-num">{{item.incoming_stored || 0}}</text>
+          <text class="stat-lab">已入库</text>
+        </view>
+        <view class="stat-cell">
+          <text class="stat-num stat-orange">{{item.incoming_ready || 0}}</text>
+          <text class="stat-lab">待打包</text>
+        </view>
+        <view class="stat-cell">
+          <text class="stat-num">{{item.packed_packed || 0}}</text>
+          <text class="stat-lab">已打包</text>
+        </view>
+        <view class="stat-cell">
+          <text class="stat-num stat-blue">{{item.packed_shipped || 0}}</text>
+          <text class="stat-lab">已发货</text>
+        </view>
+      </view>
+
+      <view class="row-between foot">
+        <text class="muted">发货：{{item.shipment_status || '待打包'}} · 意向 {{item.intents_confirmed || 0}}/{{item.intents_total || 0}}</text>
+        <view class="mini-btn ghost" data-id="{{item.id}}" bindtap="goBoard">意向看板 ›</view>
+      </view>
+    </view>
+
+    <empty-state wx:if="{{batches.length === 0}}" text="暂无批次，点上方新建" mark="＋" />
+  </block>
+
+  <view class="card notice">
+    批次锁定/解锁只能在系统操作端完成（小程序端不提供）；小程序可新建批次、查看统计、更新物流轨迹，轨迹会同步到客户端。
+  </view>
+</view>

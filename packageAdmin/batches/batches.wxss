@@ -1,0 +1,66 @@
+.page { padding: 24rpx 24rpx 40rpx; background: #eef1f6; min-height: 100vh; }
+
+.hero {
+  background: linear-gradient(135deg, #16243f, #243b5e);
+  border-radius: 24rpx; padding: 36rpx 32rpx; margin-bottom: 20rpx;
+  box-shadow: 0 10rpx 30rpx rgba(22, 36, 63, 0.28);
+}
+.hero-title { font-size: 38rpx; font-weight: 700; color: #fff; }
+.hero-sub { margin-top: 10rpx; display: block; font-size: 24rpx; color: rgba(255, 255, 255, 0.85); line-height: 1.6; }
+.head-actions { display: flex; margin-top: 22rpx; }
+.mini-btn {
+  padding: 12rpx 26rpx; margin-right: 16rpx; border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.2); color: #fff; font-size: 24rpx;
+}
+.mini-btn.ghost { background: rgba(255, 255, 255, 0.14); }
+/* 白色卡片内的按钮：.mini-btn 原本是给深色 hero 用的白字，在白卡上会隐形。
+   批次卡右上「轨迹更新」与底部「意向看板」统一改成浅蓝底蓝字。 */
+.card .mini-btn,
+.card .mini-btn.ghost {
+  background: #eaf0ff; color: #3a6df0; font-weight: 600; margin-right: 0;
+}
+.head-right .mini-btn { margin-left: 14rpx; }
+
+.card {
+  background: #fff; border-radius: 20rpx; padding: 28rpx 24rpx;
+  margin-bottom: 18rpx; box-shadow: 0 4rpx 18rpx rgba(31, 42, 60, 0.05);
+}
+
+.form-card .form-title { font-size: 30rpx; font-weight: 600; color: #1f2733; }
+.form-item { margin-top: 22rpx; }
+.form-label { display: block; font-size: 26rpx; color: #6b7484; margin-bottom: 12rpx; }
+.form-input { background: #f5f7fa; border-radius: 12rpx; height: 80rpx; padding: 0 24rpx; font-size: 28rpx; }
+.form-tip { margin-top: 18rpx; padding: 16rpx; background: #f5f7fa; border-radius: 12rpx; font-size: 23rpx; color: #6b7484; line-height: 1.7; }
+.mt { margin-top: 30rpx; }
+.btn-primary { background: #3a6df0; color: #fff; font-size: 30rpx; border-radius: 14rpx; }
+
+.batch-card .batch-head { display: flex; align-items: center; justify-content: space-between; }
+.batch-no { font-size: 32rpx; font-weight: 700; color: #1f2733; }
+.head-right { display: flex; align-items: center; }
+.lock-btn {
+  margin-left: 14rpx; padding: 8rpx 20rpx; border-radius: 999rpx;
+  font-size: 22rpx; font-weight: 600; background: #eaf0ff; color: #3a6df0;
+}
+.lock-btn.lock-on { background: #f1f3f6; color: #8a93a3; }
+.batch-zip { display: block; margin-top: 10rpx; font-size: 24rpx; color: #9a9fa8; }
+
+.tag { font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 999rpx; font-weight: 600; }
+.tag-green { background: #e8f7ef; color: #16a34a; }
+.tag-gray { background: #f1f3f6; color: #8a93a3; }
+
+.stat-grid {
+  display: flex; margin-top: 22rpx; padding: 20rpx 0;
+  background: #f5f7fa; border-radius: 14rpx;
+}
+.stat-cell { flex: 1; display: flex; flex-direction: column; align-items: center; }
+.stat-num { font-size: 34rpx; font-weight: 700; color: #1f2733; }
+.stat-orange { color: #f59e0b; }
+.stat-blue { color: #3a6df0; }
+.stat-lab { font-size: 21rpx; color: #9a9fa8; margin-top: 4rpx; }
+
+.row-between { display: flex; align-items: center; justify-content: space-between; }
+.foot { margin-top: 20rpx; padding-top: 20rpx; border-top: 2rpx solid #f0f2f5; }
+.muted { font-size: 23rpx; color: #9a9fa8; }
+
+.sk-block { height: 220rpx; border-radius: 20rpx; background: #eef1f6; }
+.notice { background: #f5f7fa; font-size: 24rpx; color: #6b7484; line-height: 1.8; padding: 24rpx; }

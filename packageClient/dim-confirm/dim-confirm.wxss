@@ -1,0 +1,49 @@
+.page { padding: 24rpx 24rpx 40rpx; background: #eef1f6; min-height: 100vh; }
+
+.hero {
+  background: linear-gradient(135deg, #16243f, #243b5e);
+  border-radius: 24rpx; padding: 36rpx 32rpx; margin-bottom: 20rpx;
+  box-shadow: 0 10rpx 30rpx rgba(22, 36, 63, 0.28);
+}
+.hero-title { font-size: 38rpx; font-weight: 700; color: #fff; }
+.hero-sub { margin-top: 10rpx; display: block; font-size: 23rpx; color: rgba(255, 255, 255, 0.85); line-height: 1.6; }
+
+.batch-card {
+  background: #fff; border-radius: 18rpx; padding: 8rpx 24rpx; margin-bottom: 16rpx;
+  box-shadow: 0 4rpx 18rpx rgba(31, 42, 60, 0.05);
+}
+.bc-head { display: flex; align-items: center; justify-content: space-between; padding: 20rpx 0; }
+.bc-left { display: flex; flex-direction: column; }
+.bc-no { font-size: 30rpx; font-weight: 700; color: #1f2733; }
+.bc-meta { font-size: 22rpx; color: #9a9fa8; margin-top: 4rpx; }
+.bc-flag { font-size: 22rpx; font-weight: 600; padding: 4rpx 16rpx; border-radius: 999rpx; }
+.bc-flag.done { color: #16a34a; background: #e7f6ec; }
+.bc-flag.pending { color: #d97706; background: #fef3e2; }
+
+.bc-detail { border-top: 2rpx solid #f4f6f9; padding: 16rpx 0 20rpx; }
+.bc-loading { font-size: 24rpx; color: #9a9fa8; padding: 12rpx 0; }
+.pkg-row { padding: 14rpx 0; border-bottom: 2rpx solid #f4f6f9; }
+.pkg-top { display: flex; align-items: center; }
+.pkg-tag {
+  font-size: 20rpx; font-weight: 700; padding: 2rpx 12rpx; border-radius: 999rpx; margin-right: 14rpx;
+}
+.pkg-tag.normal { background: #eaf0ff; color: #3a6df0; }
+.pkg-tag.sensitive { background: #fef3e2; color: #d97706; }
+.pkg-dim {
+  font-size: 26rpx; color: #1f2733; font-weight: 600;
+  font-family: Menlo, Consolas, monospace; letter-spacing: 1rpx;
+}
+.pkg-sub { font-size: 22rpx; color: #8a92a0; margin-top: 6rpx; }
+
+.bc-confirmed {
+  margin-top: 16rpx; font-size: 24rpx; color: #16a34a; font-weight: 600; text-align: center;
+  background: #e7f6ec; border-radius: 12rpx; padding: 14rpx 0;
+}
+.bc-confirm-btn {
+  margin: 16rpx 0 0; padding: 0; height: 72rpx; line-height: 72rpx;
+  background: #3a6df0; color: #fff; font-size: 28rpx; border-radius: 999rpx; font-weight: 600;
+}
+.bc-confirm-btn::after { border: none; }
+
+.empty-hint { padding: 60rpx 24rpx; text-align: center; font-size: 24rpx; color: #9a9fa8; background: #fff; border-radius: 18rpx; }
+.sk-block { height: 220rpx; border-radius: 20rpx; background: #eef1f6; }

@@ -1,0 +1,58 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">VIP 单独发货记录</view>
+    <view class="hero-sub">每位 VIP 客户「当天」的单独发货件自动归为一个 VIP 批次，与常规批次完全一致：可建账单、可更轨迹。</view>
+  </view>
+
+  <!-- 搜索 -->
+  <view class="search-bar">
+    <input class="search-input" value="{{keyword}}" placeholder="按客户名 / 客户号 / 批次号搜索" bindinput="onSearchInput" />
+    <view wx:if="{{keyword}}" class="search-clear" bindtap="onClearSearch">✕</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="skeleton sk-block"></view>
+
+  <block wx:else>
+    <view wx:for="{{list}}" wx:key="id" class="card batch-card" data-id="{{item.id}}" bindtap="goBill">
+      <view class="batch-head">
+        <view class="batch-no">{{item.title}}</view>
+        <view class="head-right">
+          <view class="tag {{item.is_locked ? 'tag-gray' : 'tag-green'}}">{{item.is_locked ? '已锁定' : '未锁定'}}</view>
+          <view class="mini-btn ghost" catchtap="goTracks" data-id="{{item.id}}">轨迹 ›</view>
+          <view class="mini-btn ghost" catchtap="goBill" data-id="{{item.id}}">账单 ›</view>
+        </view>
+      </view>
+      <text class="batch-sub">{{item.batch_no}}（{{item.customer_no || '—'}}）</text>
+
+      <view class="stat-grid">
+        <view class="stat-cell">
+          <text class="stat-num">{{item.incoming_stored || 0}}</text>
+          <text class="stat-lab">已入库</text>
+        </view>
+        <view class="stat-cell">
+          <text class="stat-num stat-orange">{{item.incoming_ready || 0}}</text>
+          <text class="stat-lab">待打包</text>
+        </view>
+        <view class="stat-cell">
+          <text class="stat-num">{{item.packed_packed || 0}}</text>
+          <text class="stat-lab">已打包</text>
+        </view>
+        <view class="stat-cell">
+          <text class="stat-num stat-blue">{{item.packed_shipped || 0}}</text>
+          <text class="stat-lab">已发货</text>
+        </view>
+      </view>
+
+      <view class="row-between foot">
+        <text class="muted">发货：{{item.shipment_status || '待打包'}}</text>
+        <view class="mini-btn ghost" catchtap="goBill" data-id="{{item.id}}">账单明细 ›</view>
+      </view>
+    </view>
+
+    <view wx:if="{{list.length === 0}}" class="card empty">暂无 VIP 单独发货批次</view>
+  </block>
+
+  <view class="card notice">
+    VIP 批次由客户在客户端选「单独地址发货」并提交后自动建立；也可在系统操作端按批次锁定发货。账单与轨迹操作与常规批次完全相同。
+  </view>
+</view>

@@ -1,0 +1,37 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">尺寸确认</view>
+    <view class="hero-sub">仓库推送的包裹尺寸（长×宽×高），请核对无误后点「确认尺寸无误」。</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="sk-block"></view>
+
+  <block wx:else>
+    <view wx:if="{{list.length === 0}}" class="empty-hint">暂无待确认的尺寸信息</view>
+
+    <view wx:for="{{list}}" wx:key="batch_id" class="batch-card">
+      <view class="bc-head" data-bid="{{item.batch_id}}" bindtap="onTapBatch">
+        <view class="bc-left">
+          <text class="bc-no">批次 {{item.batch_no}}</text>
+          <text class="bc-meta">{{item.pushed_at_disp}} · {{item.package_count}} 件</text>
+        </view>
+        <text class="bc-flag {{item.confirmed ? 'done' : 'pending'}}">{{item.confirmed ? '已确认' : '待确认'}}</text>
+      </view>
+
+      <view wx:if="{{currentBid === item.batch_id && current}}" class="bc-detail">
+        <view wx:if="{{detailLoading}}" class="bc-loading">加载中…</view>
+        <block wx:else>
+          <view wx:for="{{current.packages}}" wx:for-item="pkg" wx:key="id" class="pkg-row">
+            <view class="pkg-top">
+              <text class="pkg-tag {{pkg.nature === 'sensitive' ? 'sensitive' : 'normal'}}">{{pkg.natureLabel}}</text>
+              <text class="pkg-dim">{{pkg.dimText}}</text>
+            </view>
+            <view class="pkg-sub">实重 {{pkg.weightText}} · 体积重 {{pkg.vwText}}</view>
+          </view>
+          <view wx:if="{{current.confirmed}}" class="bc-confirmed">✓ 您已于 {{current.confirmed_at}} 确认尺寸无误</view>
+          <button wx:else class="bc-confirm-btn" data-bid="{{item.batch_id}}" catchtap="onConfirm">确认尺寸无误</button>
+        </block>
+      </view>
+    </view>
+  </block>
+</view>

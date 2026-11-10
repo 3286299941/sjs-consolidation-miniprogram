@@ -1,0 +1,51 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">VIP 单独发货记录</view>
+    <view class="hero-sub">您本人按「单独地址发货」的包裹，按发货日归并为一批，与管理端记录口径一致。</view>
+  </view>
+
+  <view wx:if="{{!bound}}" class="card empty">请先在「我的」绑定客户身份后查看。</view>
+  <view wx:elif="{{!isVip && !adminAll}}" class="card empty">您当前不是 VIP 单独发货客户，暂无此类记录。</view>
+
+  <block wx:else>
+    <view wx:if="{{adminAll}}" class="admin-banner">管理员预览：展示全部 VIP 单独发货批次</view>
+    <view wx:if="{{loading}}" class="skeleton sk-block"></view>
+    <view wx:elif="{{list.length === 0}}" class="card empty">暂无 VIP 单独发货记录</view>
+
+    <view wx:for="{{list}}" wx:key="id" class="card batch-card" data-id="{{item.id}}" bindtap="goBill">
+      <view class="batch-head">
+        <view class="batch-no">{{item.title}}</view>
+        <view class="head-right">
+          <view class="tag {{item.is_locked ? 'tag-gray' : 'tag-green'}}">{{item.is_locked ? '已锁定' : '未锁定'}}</view>
+          <view class="mini-btn ghost" catchtap="goTracks" data-id="{{item.id}}">轨迹 ›</view>
+          <view class="mini-btn ghost" catchtap="goBill" data-id="{{item.id}}">账单 ›</view>
+        </view>
+      </view>
+      <text class="batch-sub">{{item.batch_no}}（{{item.customer_no || '—'}}）</text>
+
+      <view class="stat-grid">
+        <view class="stat-cell">
+          <text class="stat-num">{{item.package_total || 0}}</text>
+          <text class="stat-lab">包裹数</text>
+        </view>
+        <view class="stat-cell">
+          <text class="stat-num">{{item.packed_packed || 0}}</text>
+          <text class="stat-lab">已打包</text>
+        </view>
+        <view class="stat-cell">
+          <text class="stat-num stat-blue">{{item.packed_shipped || 0}}</text>
+          <text class="stat-lab">已发货</text>
+        </view>
+      </view>
+
+      <view class="row-between foot">
+        <text class="muted">状态：{{item.shipment_status || '待发货'}}</text>
+        <view class="mini-btn ghost" catchtap="goBill" data-id="{{item.id}}">账单明细 ›</view>
+      </view>
+    </view>
+  </block>
+
+  <view class="card notice">
+    VIP 批次由您在客户端选「单独地址发货」并提交后自动建立；账单与轨迹与常规批次（管理端视角）完全一致。
+  </view>
+</view>

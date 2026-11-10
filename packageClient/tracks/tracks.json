@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "物流轨迹",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "empty-state": "/components/empty-state/index"
+  }
+}

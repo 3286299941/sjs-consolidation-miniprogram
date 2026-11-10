@@ -1,0 +1,78 @@
+<view class="page">
+  <!-- 深色系统管理端顶栏（区别于客户端的亮蓝个人身份卡） -->
+  <view class="hero">
+    <view class="hero-left">
+      <view class="hero-title">系统管理端</view>
+      <view class="hero-sub">{{weekLabel ? weekLabel + ' · ' : ''}}实时数据 · 全局视角</view>
+    </view>
+    <view class="hero-right">
+      <view class="hero-badge">管理后台</view>
+      <view class="hero-switch" bindtap="goClientView">客户端视角</view>
+    </view>
+  </view>
+
+  <!-- 全局 KPI（对比客户端「我的三宫格」：这里是全局指标） -->
+  <view class="kpi-grid" wx:if="{{dash}}">
+    <view class="kpi-card" bindtap="goPool">
+      <text class="kpi-num">{{dash.customer_total}}</text>
+      <text class="kpi-label">客户总数（有记录）</text>
+      <text class="kpi-sub">意向池 {{dash.pool_count}} 人 ›</text>
+    </view>
+    <view class="kpi-card">
+      <text class="kpi-num">{{dash.in_stock}}</text>
+      <text class="kpi-label">在库包裹</text>
+    </view>
+    <view class="kpi-card accent">
+      <text class="kpi-num">{{freightDisplay}}</text>
+      <text class="kpi-label">待付运费</text>
+    </view>
+    <view class="kpi-card">
+      <text class="kpi-num">{{dash.orphan}}</text>
+      <text class="kpi-label">无主件</text>
+    </view>
+  </view>
+  <view wx:else class="skeleton sk-kpi"></view>
+
+  <!-- 待我处理（管理端核心差异化：客户端无此概念） -->
+  <view class="card section">
+    <view class="row-between sec-head">
+      <text class="title">待我处理</text>
+      <text class="muted">点击直达</text>
+    </view>
+    <view class="todo-grid">
+      <view
+        wx:for="{{todos}}"
+        wx:key="key"
+        class="todo-item {{item.hot ? 'todo-hot' : ''}}"
+        data-url="{{item.url}}"
+        bindtap="goTodo"
+      >
+        <view class="todo-count">{{item.count}}</view>
+        <text class="todo-label">{{item.label}}</text>
+      </view>
+    </view>
+    <view wx:if="{{!todos.length}}" class="muted" style="margin-top:16rpx;">加载中…</view>
+  </view>
+
+  <!-- 管理功能入口（次级，区别于客户端的「常用功能」） -->
+  <view class="card section">
+    <text class="title">管理功能</text>
+    <view class="entry-grid">
+      <view
+        wx:for="{{entries}}"
+        wx:key="key"
+        class="entry"
+        data-key="{{item.key}}"
+        bindtap="go"
+        hover-class="entry-hover"
+      >
+        <text class="entry-title">{{item.title}}</text>
+        <text class="entry-desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card notice">
+    管理端为内部运营工具：数据与客户端同源，但聚焦全局指标与待办处理，代客操作与客户本人走同一套校验。
+  </view>
+</view>

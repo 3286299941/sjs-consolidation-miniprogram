@@ -1,0 +1,146 @@
+<view class="page">
+  <!-- 头部：客户总览 / 意向池共用一页 -->
+  <view class="hero">
+    <view class="hero-title">{{poolMode ? '意向池' : '客户总览'}}</view>
+    <view class="hero-sub">{{poolMode ? '没有任何入库或发货记录的客户；一旦有货入库会自动移出' : '有记录客户 · 按邮编筛选 · 点击查看包裹并操作单号'}}</view>
+    <view class="head-actions">
+      <view class="mini-btn" bindtap="onTogglePool">{{poolMode ? '返回客户总览' : '意向池 ' + summary.pool_count + ' 人'}}</view>
+      <view class="mini-btn ghost" bindtap="onToggleForm">+ 新建客户</view>
+    </view>
+  </view>
+
+  <!-- 汇总 -->
+  <view class="card summary-card">
+    <view class="sum-item">
+      <text class="sum-num">{{summary.active_total}}</text>
+      <text class="sum-lab">有记录客户</text>
+    </view>
+    <view class="sum-item">
+      <text class="sum-num sum-orange">{{summary.pool_count}}</text>
+      <text class="sum-lab">意向池</text>
+    </view>
+    <view class="sum-item">
+      <text class="sum-num sum-green">{{summary.bound}}</text>
+      <text class="sum-lab">已绑定</text>
+    </view>
+    <view class="sum-item">
+      <text class="sum-num sum-orange">{{summary.pending_audit}}</text>
+      <text class="sum-lab">待审核</text>
+    </view>
+  </view>
+
+  <!-- 搜索 -->
+  <view class="search-row">
+    <view class="search-box">
+      <input
+        class="search-input"
+        value="{{keyword}}"
+        placeholder="客户名 / 客户编号 / 邮编"
+        confirm-type="search"
+        bindinput="onKeywordInput"
+        bindconfirm="onSearch"
+      />
+    </view>
+    <view class="search-btn" bindtap="onSearch">搜索</view>
+  </view>
+
+  <!-- 唯一筛选项：邮编 -->
+  <view class="batch-bar">
+    <text class="batch-bar-label">邮编</text>
+    <scroll-view scroll-x class="batch-scroll" enhanced show-scrollbar="{{false}}">
+      <view class="batch-row">
+        <view class="batch-chip {{zipFilter === '' ? 'batch-on' : ''}}" data-zip="" bindtap="onZipTap">全部邮编</view>
+        <view
+          wx:for="{{zipList}}"
+          wx:key="zip"
+          class="batch-chip {{zipFilter === item.zip ? 'batch-on' : ''}}"
+          data-zip="{{item.zip}}"
+          bindtap="onZipTap"
+        >{{item.zip}} · {{item.n}}</view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view wx:if="{{zipFilter}}" class="batch-active">
+    当前筛选：<text class="batch-active-name">{{zipFilter}}</text>
+    <text class="batch-active-clear" bindtap="onClearKeyword">清除 ✕</text>
+  </view>
+
+  <view wx:if="{{loading && list.length === 0}}">
+    <view wx:for="{{[1,2,3]}}" wx:key="*this" class="skeleton sk-card"></view>
+  </view>
+
+  <block wx:else>
+    <view
+      wx:for="{{view}}"
+      wx:key="id"
+      class="card cust-card"
+      data-id="{{item.id}}"
+      bindtap="goDetail"
+      hover-class="cust-hover"
+    >
+      <view class="cust-head">
+        <view class="avatar">{{item.avatar}}</view>
+        <view class="cust-meta">
+          <view class="row-between">
+            <text class="title">{{item.name}}</text>
+            <view class="tag {{item.bind_class}}">{{item.bind_label}}</view>
+          </view>
+          <text class="muted">{{item.customer_no}} · 邮编 {{item.zip_code || '—'}}</text>
+        </view>
+      </view>
+
+      <view class="stat-row">
+        <view class="stat-chip">待发 {{item.pending_count}}</view>
+        <view class="stat-chip">已打包 {{item.packed_count}}</view>
+        <view class="stat-chip">已发 {{item.shipped_count}}</view>
+        <view class="stat-chip freight">{{currency}}{{item.freight_display}}</view>
+      </view>
+
+      <view class="row-between foot">
+        <text class="muted">本周：{{item.intent_label}}</text>
+        <view wx:if="{{poolMode}}" class="del-btn" data-id="{{item.id}}" data-name="{{item.name}}" catchtap="onDeleteCustomer">删除</view>
+        <text wx:else class="go-detail">查看包裹 ›</text>
+      </view>
+    </view>
+
+    <empty-state
+      wx:if="{{view.length === 0 && !loading}}"
+      text="{{poolMode ? '意向池为空' : '没有符合条件的客户'}}"
+    />
+    <view wx:if="{{view.length === 0 && keyword}}" class="clear-link" bindtap="onClearKeyword">清除搜索</view>
+
+    <view wx:if="{{list.length > 0}}" class="load-more">
+      <text wx:if="{{loading}}">加载中...</text>
+      <text wx:elif="{{!hasMore}}">已加载 {{list.length}} / {{total}}</text>
+    </view>
+  </block>
+
+  <!-- 新建客户弹层 -->
+  <view wx:if="{{formOpen}}" class="mask" bindtap="onToggleForm">
+    <view class="panel" catchtap="noop">
+      <view class="panel-title">新建客户（同步系统）</view>
+      <text class="panel-sub">客户号与条码按系统规则自动生成；创建后系统操作端立即可用。</text>
+      <text class="sec-label">客户名 *</text>
+      <input class="form-input" value="{{form.name}}" placeholder="唯一，如 YiwenQ" data-field="name" bindinput="onFormInput" />
+      <text class="sec-label">收货地址 *</text>
+      <input class="form-input" value="{{form.address}}" placeholder="系统端必填" data-field="address" bindinput="onFormInput" />
+      <text class="sec-label">邮编 / 电话</text>
+      <view class="form-grid">
+        <input class="form-input" value="{{form.zip_code}}" placeholder="如 91755" type="number" data-field="zip_code" bindinput="onFormInput" />
+        <input class="form-input" value="{{form.phone}}" placeholder="选填" type="number" data-field="phone" bindinput="onFormInput" />
+      </view>
+      <text class="sec-label">备注</text>
+      <input class="form-input" value="{{form.remark}}" placeholder="选填（写入系统客户备注）" data-field="remark" bindinput="onFormInput" />
+      <view class="switch-row">
+        <text>VIP 客户（单独地址）</text>
+        <switch checked="{{form.is_vip}}" bindchange="onVipChange" />
+      </view>
+      <block wx:if="{{form.is_vip}}">
+        <text class="sec-label">发票联系人 *</text>
+        <input class="form-input" value="{{form.invoice_contact}}" placeholder="VIP 必填" data-field="invoice_contact" bindinput="onFormInput" />
+      </block>
+      <button class="btn-primary mt" disabled="{{submitting}}" bindtap="onCreateCustomer">{{submitting ? '创建中...' : '确认创建'}}</button>
+    </view>
+  </view>
+</view>

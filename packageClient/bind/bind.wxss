@@ -1,0 +1,102 @@
+.intro { display: block; line-height: 1.7; margin-top: 12rpx; }
+.result-card { display: flex; flex-direction: column; align-items: center; padding: 56rpx 32rpx; }
+.result-mark {
+  width: 112rpx; height: 112rpx; border-radius: 50%; background: #e6f8f1;
+  color: #07a36d; font-size: 60rpx; display: flex; align-items: center;
+  justify-content: center; margin-bottom: 28rpx;
+}
+.result-card .subtitle { text-align: center; line-height: 1.8; margin-top: 16rpx; }
+.result-card .btn-primary { width: 100%; }
+.warn-line {
+  margin-top: 24rpx; padding: 18rpx; background: #fff8ec;
+  border-radius: 10rpx; font-size: 24rpx; color: #a56a10; line-height: 1.7;
+}
+.type-row { display: flex; margin: 28rpx 0 8rpx; }
+.type-btn {
+  flex: 1; text-align: center; padding: 18rpx 0; margin-right: 16rpx;
+  background: #f1f3f6; border-radius: 10rpx; font-size: 26rpx; color: #6b7484;
+}
+.type-btn:last-child { margin-right: 0; }
+.type-on { background: #eaf2ff; color: #1f6feb; font-weight: 600; }
+.form-item { margin-top: 28rpx; }
+.form-label { display: block; font-size: 26rpx; color: #6b7484; margin-bottom: 12rpx; }
+.form-input {
+  background: #f7f9fc; border-radius: 10rpx; height: 84rpx;
+  padding: 0 24rpx; font-size: 28rpx;
+}
+.agree-row { display: flex; align-items: flex-start; margin-top: 32rpx; }
+.checkbox {
+  width: 36rpx; height: 36rpx; border: 2rpx solid #c9cfd8; border-radius: 50%;
+  flex-shrink: 0; margin-right: 16rpx; font-size: 24rpx; color: #ffffff;
+  display: flex; align-items: center; justify-content: center;
+}
+.checkbox-on { background: #1f6feb; border-color: #1f6feb; }
+.agree-text { font-size: 24rpx; color: #6b7484; line-height: 1.6; }
+.notice-card { background: #f7f9fc; }
+.notice-line { font-size: 24rpx; color: #6b7484; line-height: 1.9; margin-top: 8rpx; }
+.mt { margin-top: 32rpx; }
+
+/* 客户名搜索下拉（需求变更 2026-11-05） */
+.search-wrap { position: relative; }
+.dropdown {
+  margin-top: 8rpx; max-height: 360rpx; border: 2rpx solid #e6eaf0;
+  border-radius: 12rpx; background: #ffffff; overflow: hidden;
+}
+.dropdown-item { padding: 24rpx; border-bottom: 2rpx solid #edf0f4; }
+.dropdown-item:last-child { border-bottom: none; }
+.dropdown-hint { padding: 28rpx; text-align: center; font-size: 24rpx; color: #9a9fa8; }
+.selected-box { margin-top: 16rpx; padding: 22rpx; background: #eaf2ff; border-radius: 12rpx; }
+.selected-box .muted { margin-top: 8rpx; }
+.link-btn { font-size: 26rpx; color: #1f6feb; }
+.field-hint { font-size: 24rpx; color: #d98209; margin-top: 12rpx; }
+
+/* 地址 / 邮编展示（第三轮） */
+.sel-line { display: block; font-size: 24rpx; color: #4a5462; margin-top: 8rpx; line-height: 1.6; }
+.zip {
+  font-size: 24rpx; color: #1f6feb; background: #eaf2ff;
+  padding: 4rpx 12rpx; border-radius: 8rpx;
+}
+.addr-line { display: block; font-size: 24rpx; color: #4a5462; margin-top: 10rpx; line-height: 1.6; }
+.no-line { display: block; font-size: 22rpx; color: #9a9fa8; margin-top: 6rpx; }
+
+/* 区域 + 邮编（第三轮修正） */
+.area-row { display: flex; align-items: center; margin-top: 10rpx; }
+.area-tag {
+  font-size: 24rpx; color: #07a36d; background: #e6f8f1;
+  padding: 4rpx 14rpx; border-radius: 8rpx; margin-right: 12rpx;
+}
+.sel-line { display: block; font-size: 24rpx; color: #4a5462; margin-top: 8rpx; line-height: 1.6; }
+.no-line { display: block; font-size: 22rpx; color: #9a9fa8; margin-top: 6rpx; }
+.zip {
+  font-size: 24rpx; color: #1f6feb; background: #eaf2ff;
+  padding: 4rpx 12rpx; border-radius: 8rpx;
+}
+
+/* 新客户建档表单（2026-11-06） */
+.form-textarea {
+  background: #f7f9fc; border-radius: 10rpx; padding: 20rpx 24rpx;
+  font-size: 28rpx; width: 100%; min-height: 140rpx; box-sizing: border-box;
+}
+.solo-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 28rpx; padding: 22rpx 24rpx; background: #f7f9fc; border-radius: 12rpx;
+}
+.solo-text { flex: 1; min-width: 0; margin-right: 16rpx; }
+.solo-title { display: block; font-size: 28rpx; font-weight: 600; color: #1f2733; }
+.solo-sub { display: block; font-size: 22rpx; color: #d98209; margin-top: 6rpx; line-height: 1.5; }
+
+/* 电商平台地址模板 */
+.tpl-card {
+  margin-top: 28rpx; padding: 24rpx; background: #f1f7f3;
+  border: 2rpx dashed #07a36d; border-radius: 14rpx;
+}
+.tpl-title { display: block; font-size: 24rpx; color: #07a36d; font-weight: 600; margin-bottom: 14rpx; }
+.tpl-line {
+  font-size: 24rpx; color: #1f2733; line-height: 1.7;
+  font-family: Menlo, Consolas, monospace; letter-spacing: 0.5rpx; word-break: break-all;
+}
+.copy-btn {
+  margin-top: 18rpx; background: #07a36d; color: #fff; font-size: 26rpx;
+  border-radius: 999rpx; padding: 0 36rpx; height: 64rpx; line-height: 64rpx;
+}
+.copy-btn::after { border: none; }

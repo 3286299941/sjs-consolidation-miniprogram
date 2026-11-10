@@ -1,0 +1,158 @@
+.search-row { display: flex; align-items: center; margin-bottom: 20rpx; }
+.search-input {
+  flex: 1; background: #ffffff; border-radius: 12rpx; height: 76rpx;
+  padding: 0 24rpx; font-size: 28rpx;
+}
+.search-btn {
+  margin-left: 16rpx; background: #1f6feb; color: #ffffff;
+  padding: 0 28rpx; height: 76rpx; line-height: 76rpx;
+  border-radius: 12rpx; font-size: 28rpx;
+}
+.filter-block { background: #ffffff; border-radius: 16rpx; padding: 20rpx; margin-bottom: 20rpx; }
+.filter-scroll { white-space: nowrap; }
+.filter-scroll + .filter-scroll { margin-top: 16rpx; }
+.chip {
+  display: inline-block; padding: 10rpx 24rpx; margin-right: 16rpx;
+  background: #f1f3f6; color: #6b7484; border-radius: 999rpx; font-size: 24rpx;
+}
+.chip-on { background: #eaf2ff; color: #1f6feb; font-weight: 600; }
+.count-line { font-size: 24rpx; color: #9a9fa8; margin: 4rpx 8rpx 16rpx; }
+.sk-card { height: 200rpx; border-radius: 16rpx; margin-bottom: 20rpx; }
+.load-more { text-align: center; padding: 32rpx 0 48rpx; font-size: 24rpx; color: #9a9fa8; }
+.mt { margin-top: 24rpx; }
+
+/* ---------- 第八轮：三态列表 ---------- */
+.tabs {
+  display: flex; background: #ffffff; border-radius: 14rpx;
+  padding: 8rpx; margin-bottom: 20rpx;
+}
+.tab {
+  flex: 1; text-align: center; padding: 16rpx 0;
+  font-size: 27rpx; color: #6b7484; border-radius: 10rpx;
+}
+.tab-on { background: #eaf2ff; color: #1f6feb; font-weight: 600; }
+
+/* 待发货：极简，只有单号与入库时间 */
+.pending-card {
+  background: #ffffff; border-radius: 14rpx; padding: 24rpx 26rpx;
+  margin-bottom: 16rpx; display: flex; flex-direction: column;
+}
+.p-no { font-size: 29rpx; font-weight: 600; color: #1f2733; }
+.p-time { font-size: 24rpx; color: #9a9fa8; margin-top: 10rpx; }
+
+/* 已打包 / 已发货：包裹维度 */
+.ship-card { background: #ffffff; border-radius: 14rpx; padding: 26rpx; margin-bottom: 16rpx; }
+/* 已发货批次卡内嵌的包裹明细卡 */
+.ship-card-nested {
+  margin-top: 18rpx; background: #f6f8fb;
+  border-top: 2rpx dashed #e3e7ee;
+}
+.s-label { font-size: 30rpx; font-weight: 600; color: #1f2733; }
+.meta-row { display: flex; flex-wrap: wrap; margin-top: 16rpx; }
+.meta { font-size: 23rpx; color: #6b7484; margin-right: 22rpx; }
+.fee-row { display: flex; margin-top: 20rpx; padding-top: 18rpx; border-top: 2rpx solid #edf0f4; }
+.fee-item { flex: 1; display: flex; flex-direction: column; }
+.fee-num { font-size: 34rpx; font-weight: 600; color: #1f6feb; }
+.fee-unit { font-size: 22rpx; color: #6b7484; font-weight: 400; }
+.fee-lab { font-size: 22rpx; color: #9a9fa8; margin-top: 6rpx; }
+
+/* ---------- 已付款标记 ---------- */
+.pay-row { display: flex; align-items: center; margin-top: 16rpx; }
+.paid-badge {
+  font-size: 22rpx; color: #1a8a3c; background: #eafaf0;
+  padding: 6rpx 16rpx; border-radius: 999rpx; font-weight: 600;
+}
+.paid-info { font-size: 21rpx; color: #9a9fa8; margin-left: 14rpx; }
+.paid-unmark {
+  margin-left: auto; font-size: 22rpx; color: #9a9fa8;
+  padding: 6rpx 18rpx; border: 2rpx solid #e3e7ee; border-radius: 999rpx;
+}
+.mark-paid-btn {
+  margin-left: auto; font-size: 23rpx; color: #1f6feb; font-weight: 600;
+  padding: 8rpx 24rpx; background: #eaf2ff; border-radius: 999rpx;
+}
+
+/* ---------- 第十轮：包裹内含品名与单号 ---------- */
+.fold-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 18rpx; padding-top: 18rpx; border-top: 2rpx solid #edf0f4;
+}
+.fold-text { font-size: 24rpx; color: #6b7484; }
+.fold-arrow { font-size: 24rpx; color: #1f6feb; }
+
+.fold-body { margin-top: 16rpx; padding-top: 18rpx; border-top: 2rpx dashed #e6eaf0; }
+.goods-block { display: flex; align-items: flex-start; }
+.goods-lab {
+  font-size: 23rpx; color: #9a9fa8; flex-shrink: 0;
+  line-height: 44rpx; margin-right: 16rpx;
+}
+.goods-tags { flex: 1; display: flex; flex-wrap: wrap; }
+.goods-tag {
+  font-size: 23rpx; color: #1f6feb; background: #eaf2ff;
+  padding: 4rpx 16rpx; border-radius: 8rpx; margin: 0 10rpx 10rpx 0;
+  line-height: 34rpx;
+}
+.goods-empty { font-size: 23rpx; color: #d98209; line-height: 44rpx; }
+
+.no-head {
+  font-size: 23rpx; color: #9a9fa8;
+  margin: 14rpx 0 4rpx; padding-top: 14rpx; border-top: 2rpx solid #f4f6f9;
+}
+.item-row {
+  display: flex; align-items: center;
+  padding: 12rpx 0; border-bottom: 2rpx solid #f4f6f9;
+}
+.item-row:last-child { border-bottom: none; }
+.item-idx {
+  width: 40rpx; font-size: 22rpx; color: #c3c8d0;
+  font-family: Menlo, Consolas, monospace; flex-shrink: 0;
+}
+.item-no {
+  flex: 1; font-size: 26rpx; color: #1f2733; line-height: 1.5;
+  font-family: Menlo, Consolas, monospace; word-break: break-all;
+}
+.fold-hint {
+  display: block; font-size: 23rpx; color: #9a9fa8;
+  padding: 16rpx 0 6rpx; line-height: 1.6;
+}
+
+/* ---------- 尺寸 ---------- */
+.dim-row { display: flex; align-items: center; margin-top: 14rpx; }
+.dim-lab { font-size: 23rpx; color: #9a9fa8; flex-shrink: 0; margin-right: 16rpx; }
+.dim-val { font-size: 25rpx; color: #1f2733; font-weight: 600; }
+.dim-empty { font-size: 23rpx; color: #d98209; }
+
+/* ---------- 卡片级运费 / 重量明细 ---------- */
+.fee-freight { color: #d98209; }
+.w-row { display: flex; margin-top: 10rpx; }
+.w-item { font-size: 22rpx; color: #9a9fa8; margin-right: 24rpx; }
+.fee-none { color: #c3c8d0 !important; }
+
+/* ---------- VIP发货 tab：批次卡（与 VIP 记录页同款样式） ---------- */
+.admin-banner {
+  background: #fff7e6; color: #ad6800; font-size: 24rpx;
+  padding: 16rpx 24rpx; border-radius: 16rpx; margin-bottom: 20rpx;
+  border: 1rpx solid #ffe0a3;
+}
+.vip-card {
+  background: #ffffff; border-radius: 14rpx; padding: 26rpx;
+  margin-bottom: 16rpx;
+}
+.vip-head { display: flex; align-items: center; justify-content: space-between; }
+.vip-title { font-size: 30rpx; font-weight: 700; color: #1f2733; }
+.head-right { display: flex; align-items: center; flex-shrink: 0; }
+.mini-btn {
+  font-size: 24rpx; padding: 6rpx 18rpx; border-radius: 24rpx;
+  margin-left: 12rpx;
+}
+.ghost { background: #f2f5f9; color: #1f6feb; }
+.vip-sub { display: block; margin-top: 10rpx; font-size: 24rpx; color: #9a9fa8; }
+.vip-stat {
+  display: flex; margin-top: 22rpx;
+  border-top: 1rpx solid #eef1f6; padding-top: 20rpx;
+}
+.stat-cell { flex: 1; text-align: center; }
+.stat-num { display: block; font-size: 34rpx; font-weight: 700; color: #1f2733; }
+.stat-lab { display: block; margin-top: 6rpx; font-size: 22rpx; color: #9a9fa8; }
+.stat-blue { color: #1f6feb; }
+.vip-foot { margin-top: 20rpx; }

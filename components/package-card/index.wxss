@@ -1,0 +1,17 @@
+.pkg-card {
+  background: #ffffff; border-radius: 16rpx; padding: 26rpx;
+  margin-bottom: 20rpx; box-shadow: 0 2rpx 12rpx rgba(31,39,51,0.04);
+}
+.pkg-head { margin-bottom: 16rpx; }
+.pkg-no {
+  font-size: 28rpx; font-weight: 600; color: #1f2733;
+  margin-right: 12rpx; max-width: 300rpx; overflow: hidden;
+  white-space: nowrap; text-overflow: ellipsis;
+}
+.pkg-meta { font-size: 24rpx; color: #6b7484; line-height: 1.7; }
+.pkg-remark {
+  margin-top: 12rpx; font-size: 24rpx; color: #d98209;
+  background: #fff8ec; padding: 10rpx 16rpx; border-radius: 8rpx;
+}
+.pkg-foot { margin-top: 18rpx; padding-top: 16rpx; border-top: 2rpx solid #edf0f4; }
+.copy-btn { font-size: 24rpx; color: #1f6feb; padding: 6rpx 12rpx; }

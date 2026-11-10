@@ -1,0 +1,67 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">物流轨迹</view>
+    <view class="hero-sub">{{onlyBatchId ? '仅显示所选批次的轨迹 · 普货 / 敏货两组 · 由管理端实时更新' : '按批次 · 普货 / 敏货两组 · 由管理端实时更新'}}</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="skeleton sk-block"></view>
+
+  <block wx:else>
+    <view wx:for="{{list}}" wx:key="batch_id" wx:for-index="bi" wx:for-item="grp" class="card batch-card {{grp.collapsed ? 'card-collapsed' : ''}}">
+      <view class="row-between batch-head" data-bi="{{bi}}" bindtap="onToggleBatch">
+        <text class="batch-no">{{grp.batch_no}}</text>
+        <view class="batch-head-right">
+          <text class="muted">邮编 {{grp.zip_code || '—'}}</text>
+          <text class="batch-fold">{{grp.collapsed ? '展开' : '收起'}}</text>
+        </view>
+      </view>
+
+      <block wx:if="{{!grp.collapsed}}">
+      <view wx:for="{{grp.rows}}" wx:key="group_name" wx:for-index="gi" wx:for-item="tr" class="track-group">
+        <view class="group-head">
+          <text class="badge {{tr.group_name === '普货' ? 'badge-green' : 'badge-red'}}">{{tr.group_name}}</text>
+        </view>
+
+        <view class="bar">
+          <view class="bar-fill" style="width: {{tr.percent}}%"></view>
+        </view>
+        <view class="bar-caption {{tr.currentIssue ? 'caption-issue' : ''}}">
+          当前状态：{{tr.currentLabel}}
+        </view>
+
+        <view class="fold-toggle" data-bi="{{bi}}" data-gi="{{gi}}" bindtap="onToggleExpand">
+          <text class="fold-title">详细轨迹</text>
+          <text class="fold-action">{{tr.expanded ? '收起' : '展开'}}</text>
+        </view>
+        <text wx:if="{{!tr.expanded}}" class="fold-hint-line">点击展开查看完整物流节点</text>
+
+        <view wx:if="{{tr.expanded}}" class="timeline">
+          <view wx:for="{{tr.nodes}}" wx:for-item="nd" wx:key="key" class="tl-row">
+            <view class="tl-rail">
+              <view class="tl-dot {{nd.dotClass}}"></view>
+              <view wx:if="{{!nd.last}}" class="tl-line {{nd.done ? 'line-done' : ''}}"></view>
+            </view>
+            <view class="tl-body">
+              <view class="tl-title-row">
+                <text class="tl-name {{nd.nameClass}}">{{nd.label}}</text>
+                <text wx:if="{{nd.issue}}" class="tl-tag">可能异常</text>
+              </view>
+              <text class="tl-status {{nd.statusClass}}">{{nd.status}}</text>
+              <text wx:if="{{nd.date}}" class="tl-date">{{nd.date}}</text>
+              <text wx:if="{{nd.note}}" class="tl-note">{{nd.note}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view wx:if="{{tr.customNote}}" class="note-line">补充说明：{{tr.customNote}}</view>
+      </view>
+      </block>
+    </view>
+
+    <empty-state wx:if="{{list.length === 0}}" text="{{onlyBatchId ? '该批次暂无轨迹记录' : '暂无与您货物相关的轨迹'}}" mark="✓" />
+
+    <view wx:if="{{onlyBatchId && list.length > 0}}" class="all-link" bindtap="goAllTracks">
+      查看全部物流轨迹 ›
+    </view>
+  </block>
+</view>

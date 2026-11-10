@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "客户总览",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "empty-state": "/components/empty-state/index"
+  }
+}
